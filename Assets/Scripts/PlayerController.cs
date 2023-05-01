@@ -5,21 +5,38 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] private GameObject m_player;
-    [SerializeField] public bool m_isMoving = false;
     private GridLogic grid = new GridLogic();
+
+    [SerializeField] private GameObject m_playerControl;
+    [SerializeField] private GameObject m_playerCharacter;
+    [SerializeField] public bool m_isMoving = false;
+
+    private void Start()
+    {
+        m_playerCharacter.transform.localPosition = Vector3.zero;
+    }
 
     void Update()
     {
+        HandleAttack();
         if (m_isMoving) {
             return;
         } else
         {
-            HandleKeyboard();
+            HandleMovement();
         }
     }
 
-    private void HandleKeyboard()
+    private void HandleAttack()
+    {
+        if (Input.GetKeyDown(KeyCode.LeftControl) ||
+            Input.GetKeyDown(KeyCode.RightControl) )
+        {
+            Debug.Log("Attacking");
+        }
+    }
+
+    private void HandleMovement()
     {
         var l_vertical = Input.GetAxis("Vertical");
         var l_horizontal = Input.GetAxis("Horizontal");
@@ -48,6 +65,6 @@ public class PlayerController : MonoBehaviour
         }
 
         m_isMoving = true;
-        StartCoroutine(grid.Movement(m_player, l_direction, 0.0f));
+        StartCoroutine(grid.Movement(m_playerControl, m_playerCharacter, l_direction, 0.0f));
     }
 }

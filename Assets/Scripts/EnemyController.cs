@@ -8,8 +8,9 @@ public class EnemyController : MonoBehaviour
 {
     private GridLogic grid = new GridLogic();
 
-    [SerializeField] private GameObject m_enemy;
-    [SerializeField] private GameObject m_target;
+    [SerializeField] private GameObject m_enemyControl;
+    [SerializeField] private GameObject m_enemyCharacter;
+    [SerializeField] private GameObject m_targetControl;
     [SerializeField] public bool m_isMoving = false;
     [SerializeField] private float m_speedMovementDelay = 0.2f;
     private float m_distanceToFight;
@@ -18,6 +19,7 @@ public class EnemyController : MonoBehaviour
     private void Start()
     {
         m_distanceToFight = grid.m_tileGridSize * 3;
+        m_enemyCharacter.transform.localPosition = Vector3.zero;
     }
 
     void Update()
@@ -51,7 +53,7 @@ public class EnemyController : MonoBehaviour
 
     void MoveEnemy()
     {
-        Vector3 l_difference = new Vector3(m_enemy.transform.localPosition.x - m_target.transform.localPosition.x, 0, m_enemy.transform.localPosition.z - m_target.transform.localPosition.z);
+        Vector3 l_difference = new Vector3(m_enemyCharacter.transform.localPosition.x - m_targetControl.transform.localPosition.x, 0, m_enemyCharacter.transform.localPosition.z - m_targetControl.transform.localPosition.z);
         Vector3 l_direction = new Vector3(0, 0, 0);
 
         //l_difference.Normalize();
@@ -59,34 +61,6 @@ public class EnemyController : MonoBehaviour
         Debug.Log(l_difference  + " " +   m_distanceToFight);
         Debug.Log("Z " + (Math.Abs(l_difference.z) - m_distanceToFight));
         Debug.Log("X " + (Math.Abs(l_difference.x) - m_distanceToFight));
-
-        /*
-        if (Math.Abs(Math.Abs(l_difference.z) - m_distanceToFight) > 0) 
-        {
-            if (l_difference.z < -grid.m_tileGridSize)
-            {
-                l_direction = transform.forward;
-            }
-            else if (l_difference.z > grid.m_tileGridSize) 
-            {
-                l_direction = -transform.forward;
-            }
-            
-        } 
-        */
-
-        if (Math.Abs(Math.Abs(l_difference.x) - m_distanceToFight) > 0)
-        {
-            if (l_difference.x < grid.m_tileGridSize)
-            {
-                l_direction = transform.right;
-            }
-            else if (l_difference.x > -grid.m_tileGridSize)
-            {
-                l_direction = -transform.right;
-            }
-        }
-        
 
 
         if (l_direction == new Vector3(0, 0, 0))
@@ -103,6 +77,6 @@ public class EnemyController : MonoBehaviour
         m_isMoving = true;
 
         m_previousDirection = l_direction;
-        StartCoroutine(grid.Movement(m_enemy, l_direction, m_speedMovementDelay));
+        StartCoroutine(grid.Movement(m_enemyControl, m_enemyCharacter, l_direction, m_speedMovementDelay));
     }
 }
