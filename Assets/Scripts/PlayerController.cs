@@ -9,6 +9,7 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] private GameObject m_playerControl;
     [SerializeField] private GameObject m_playerCharacter;
+    [SerializeField] private GameObject m_playerBlood;
     [SerializeField] public bool m_isMoving = false;
 
     private void Start()
@@ -27,12 +28,28 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void HandleHurt()
+    {
+        m_playerBlood.SetActive(true);
+
+        // wait
+        StartCoroutine(WaitForBlood());
+    }
+
+    private IEnumerator WaitForBlood()
+    {
+        yield return new WaitForSeconds(0.5f);
+
+        m_playerBlood.SetActive(false);
+    }
+
     private void HandleAttack()
     {
         if (Input.GetKeyDown(KeyCode.LeftControl) ||
             Input.GetKeyDown(KeyCode.RightControl) )
         {
-            Debug.Log("Attacking");
+            //var target = m_ene.GetComponent<EnemyController>();
+            //target.HandleHurt();
         }
     }
 
@@ -64,6 +81,7 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
+        m_playerCharacter.GetComponent<Animator>().SetTrigger("Running");
         m_isMoving = true;
         StartCoroutine(grid.Movement(m_playerControl, m_playerCharacter, l_direction, 0.0f));
     }

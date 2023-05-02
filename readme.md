@@ -18,7 +18,7 @@ Modalidades de duelo múltiple. Inclusive teniendo aliados, para 2v2, 3v3.
 
 Todos los movimientos se basan en una grilla. Nadie puede caminar diagonalmente.
 
-Los enemigos van a avanzar hacia el jugador y al llegar a una distancia de impacto cambiará su forma de movimiento y empezará a rodear al personaje mientras realiza movimientos aleatorios para esquivar los ataques del personaje, y buscarán el momento para acercarse y atacarlo físicamente.
+Los enemigos van a avanzar hacia el jugador haciendo esquives y movimientos aleatorios mientras rodea e intenta golpear al personaje fisicamente, tambien siendo un enemigo con magia puede cad atanto frenarse y atacar con magia a la distancia.
 
 Nos movemos con las flechas o WASD, para esquivar y dirigir los ataques.
 

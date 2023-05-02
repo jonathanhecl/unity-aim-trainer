@@ -18,10 +18,6 @@ public class GridLogic : MonoBehaviour
         var l_originalControlPosition = p_control.transform.localPosition;
         var l_nextControlPosition = l_originalControlPosition + (p_direction * m_tileGridSize);
 
-        // character movement
-        var l_originalPosition = p_character.transform.position;
-        var l_nextPosition = l_originalPosition + (p_direction * m_tileGridSize);
-
         // character rotation
         var l_originalRotation = p_character.transform.rotation;
         var l_nextRotation = Quaternion.LookRotation(p_direction);        
@@ -32,15 +28,14 @@ public class GridLogic : MonoBehaviour
             p_control.transform.localPosition = Vector3.Lerp(l_originalControlPosition, l_nextControlPosition, (l_elapsedTime / (m_timeToMove + p_extraDelay)));
 
             // Character
-            p_character.transform.position = Vector3.Lerp(l_originalPosition, l_nextPosition, (l_elapsedTime / (m_timeToMove+ p_extraDelay)));
             p_character.transform.rotation = Quaternion.Lerp(l_originalRotation, l_nextRotation, (l_elapsedTime / (m_timeToMove + p_extraDelay)));
             l_elapsedTime += Time.deltaTime;
             yield return null;
         }
 
         // Final position
-        p_character.transform.position = l_nextPosition;
         p_control.transform.localPosition = l_nextControlPosition;
+        p_character.transform.localPosition = Vector3.zero;
 
         UpdateControlStateMovement(p_control, false);
     }
