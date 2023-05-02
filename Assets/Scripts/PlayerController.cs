@@ -32,13 +32,12 @@ public class PlayerController : MonoBehaviour
     {
         m_playerBlood.SetActive(true);
 
-        // wait
         StartCoroutine(WaitForBlood());
     }
 
     private IEnumerator WaitForBlood()
     {
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.3f);
 
         m_playerBlood.SetActive(false);
     }
@@ -48,8 +47,19 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.LeftControl) ||
             Input.GetKeyDown(KeyCode.RightControl) )
         {
-            //var target = m_ene.GetComponent<EnemyController>();
-            //target.HandleHurt();
+            var l_target = GameObject.FindGameObjectWithTag("Enemy").GetComponent<EnemyController>();
+            if (l_target != null)
+            {
+                Vector3 l_difference = l_target.transform.position - m_playerControl.transform.position;
+                float l_distance = l_difference.magnitude;
+                Quaternion l_looking = m_playerCharacter.transform.localRotation.normalized;
+
+                if (l_distance < 14) {
+                    Debug.Log("target" + l_distance + l_looking);
+
+                    l_target.HandleHurt();
+                }
+            }
         }
     }
 

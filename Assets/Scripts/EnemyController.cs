@@ -7,6 +7,7 @@ using static UnityEditor.Searcher.SearcherWindow.Alignment;
 public class EnemyController : MonoBehaviour
 {
     private GridLogic grid = new GridLogic();
+    private float m_entropy = 0.0f;
     private float m_distanceToMagic;
 
     [SerializeField] private GameObject m_enemyControl;
@@ -25,8 +26,6 @@ public class EnemyController : MonoBehaviour
 
     void Update()
     {
-        HandleClick();
-
         if (m_isMoving)
         {
             return;
@@ -37,28 +36,24 @@ public class EnemyController : MonoBehaviour
         }
     }
 
-    private void HandleClick()
+    private void OnMouseDown()
     {
         if (Input.GetMouseButtonDown(0))
         {
-            RaycastHit l_hit;
-            Ray l_ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(l_ray, out l_hit))
-            {
-                HandleHurt();
-            }
+            HandleHurt();
         }
     }
 
     public void HandleHurt()
     {
         m_enemyBlood.SetActive(true);
+        m_entropy++;
         StartCoroutine(WaitForBlood());
     }
 
     private IEnumerator WaitForBlood()
     {
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.3f);
 
         m_enemyBlood.SetActive(false);
     }
@@ -97,8 +92,8 @@ public class EnemyController : MonoBehaviour
 
         m_enemyCharacter.transform.rotation = Quaternion.Lerp(l_originalRotation, l_nextRotation, m_speedMovementDelay);
 
-        var target = m_targetControl.GetComponent<PlayerController>();
-        target.HandleHurt();
+        var l_target = m_targetControl.GetComponent<PlayerController>();
+        l_target.HandleHurt();
 
         l_direction = RandomMovement(-l_direction, l_direction);
 
@@ -109,27 +104,29 @@ public class EnemyController : MonoBehaviour
     private Vector3 RandomMovement(Vector3 p_direction, Vector3 p_invalid)
     {
         var result = new Vector3();
-        var num = UnityEngine.Random.Range(0.0f, 10.0f);
+        var num = UnityEngine.Random.Range(0.0f, 5.0f);
 
-        Debug.Log(num);
-
-        if (num <= 5.9f)
+        if (num <= 3.5f && m_entropy == 0.0f)
         {
             result = p_direction;
         } else
         {
-            // calculate a random direction
-            if (num>8.9f)
+            num = UnityEngine.Random.Range(0.0f, 4.0f);
+
+            switch (num)
             {
-                result = transform.right;
-            } else if (num>7.9f)
-            {
-                result = transform.forward;
-            } else if (num > 6.9f)
-            { 
-                result = -transform.right;
-            } else { 
-                result = -transform.forward;
+                case (> 3.0f):
+                    result = transform.right;
+                    break;
+                case (> 2.0f):
+                    result = transform.forward;
+                    break;
+                case (> 1.0f):
+                    result = -transform.right;
+                    break;
+                default:
+                    result = -transform.forward;
+                    break;
             }
         }
 
@@ -138,6 +135,11 @@ public class EnemyController : MonoBehaviour
             result = p_direction;
         }
 
+        if (m_entropy > 0.0f)
+        {
+            m_entropy--;
+        }
+       
         return result;
     }
 
