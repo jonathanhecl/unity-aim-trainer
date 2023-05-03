@@ -15,12 +15,22 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private GameObject m_playerBlood;
     [SerializeField] public bool m_isMoving = false;
 
+    private AudioSource m_audioSource;
+
+    [SerializeField] public AudioClip m_audioAttackMiss;
+    [SerializeField] public AudioClip m_audioAttackHit;
+    [SerializeField] public AudioClip m_audioCure;
+    [SerializeField] public AudioClip m_audioHurt;
+    [SerializeField] public AudioClip m_audioDeath;
+    [SerializeField] public AudioClip m_audioRevive;
+
     private float m_lastCure;
     private float m_lastAttack;
 
     private void Start()
     {
         m_playerCharacter.transform.localPosition = Vector3.zero;
+        m_audioSource = GetComponent<AudioSource>();
     }
 
     void Update()
@@ -45,6 +55,7 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.R))
         {
+            m_audioSource.PlayOneShot(m_audioRevive);
             m_currentHP = m_maxHP;
             m_playerCharacter.GetComponent<Animator>().SetBool("Alive", true);
         }
@@ -58,6 +69,7 @@ public class PlayerController : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.U))
         {
+            m_audioSource.PlayOneShot(m_audioCure);
             m_lastCure = Time.time;
             m_currentHP += 50;
             if (m_currentHP > m_maxHP)
@@ -73,10 +85,12 @@ public class PlayerController : MonoBehaviour
         m_playerCharacter.GetComponent<Animator>().SetTrigger("Hit");
         if (m_currentHP <= 0)
         {
+            m_audioSource.PlayOneShot(m_audioDeath);
             m_playerCharacter.GetComponent<Animator>().SetBool("Alive", false);
         }
         else
         {
+            m_audioSource.PlayOneShot(m_audioHurt);
             m_playerBlood.SetActive(true);
             StartCoroutine(WaitForBlood());
         }
@@ -137,7 +151,11 @@ public class PlayerController : MonoBehaviour
             var l_target = IsEnemyIn(Vector3.forward);
             if (l_target != null)
             { 
+                m_audioSource.PlayOneShot(m_audioAttackHit);
                 l_target.HandleHurt(50);
+            } else
+            {
+                m_audioSource.PlayOneShot(m_audioAttackMiss);
             }
         }
     }
@@ -170,9 +188,11 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
-        if (IsEnemyIn(l_direction))
+        if (IsEnemyIn(l_direction))  // Can't move only rotate
         {
-            return; // Can't move
+            m_playerCharacter.transform.rotation = Quaternion.Lerp(transform.transform.rotation, Quaternion.LookRotation(l_direction), grid.m_timeToMove);
+
+            return;
         }
 
         m_playerCharacter.GetComponent<Animator>().SetBool("Running",true);

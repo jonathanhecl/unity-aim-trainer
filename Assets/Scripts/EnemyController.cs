@@ -21,10 +21,17 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private float m_speedMovementDelay = 0.2f;
     [SerializeField] private int m_tilesDistanceToMagic = 10;
 
+    private AudioSource m_audioSource;
+
+    [SerializeField] public AudioClip m_audioAttackHit;
+    [SerializeField] public AudioClip m_audioHurt;
+    [SerializeField] public AudioClip m_audioDeath;
+
     private void Start()
     {
         m_distanceToMagic = grid.m_tileGridSize * m_tilesDistanceToMagic;
         m_enemyCharacter.transform.localPosition = Vector3.zero;
+        m_audioSource = GetComponent<AudioSource>();
     }
 
     void Update()
@@ -46,10 +53,13 @@ public class EnemyController : MonoBehaviour
 
     private void OnMouseDown()
     {
+        /*
         if (Input.GetMouseButtonDown(0))
         {
+            // TODO: The sound from the spell if from the player, not the enemy
             HandleHurt(70.0f);
         }
+        */
     }
 
     public void HandleHurt(float p_damage)
@@ -59,10 +69,12 @@ public class EnemyController : MonoBehaviour
 
         if (m_currentHP <= 0)
         {
+            m_audioSource.PlayOneShot(m_audioDeath);
             m_enemyCharacter.GetComponent<Animator>().SetBool("Alive", false);
         }
         else
         {
+            m_audioSource.PlayOneShot(m_audioHurt);
             m_enemyBlood.SetActive(true);
             m_entropy++;
             StartCoroutine(WaitForBlood());
@@ -110,7 +122,12 @@ public class EnemyController : MonoBehaviour
         m_enemyCharacter.transform.rotation = Quaternion.Lerp(l_originalRotation, l_nextRotation, m_speedMovementDelay);
 
         var l_target = m_targetControl.GetComponent<PlayerController>();
-        l_target.HandleHurt(50);
+
+        if (l_target != null)
+        {
+            m_audioSource.PlayOneShot(m_audioAttackHit);
+            l_target.HandleHurt(50);
+        }
 
         l_direction = RandomMovement(-l_direction, l_direction);
 
