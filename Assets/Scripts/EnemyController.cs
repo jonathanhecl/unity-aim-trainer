@@ -10,6 +10,9 @@ public class EnemyController : MonoBehaviour
     private float m_entropy = 0.0f;
     private float m_distanceToMagic;
 
+    [SerializeField] private float m_maxHP = 200.0f;
+    [SerializeField] private float m_currentHP = 200.0f;
+
     [SerializeField] private GameObject m_enemyControl;
     [SerializeField] private GameObject m_enemyCharacter;
     [SerializeField] private GameObject m_enemyBlood;
@@ -26,13 +29,18 @@ public class EnemyController : MonoBehaviour
 
     void Update()
     {
+        if (m_currentHP <= 0)
+        {
+            return;
+        }
+
         if (m_isMoving)
         {
             return;
         }
         else
         {
-            MoveEnemy();
+           MoveEnemy();
         }
     }
 
@@ -40,15 +48,23 @@ public class EnemyController : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            HandleHurt();
+            HandleHurt(70.0f);
         }
     }
 
-    public void HandleHurt()
+    public void HandleHurt(float p_damage)
     {
-        m_enemyBlood.SetActive(true);
-        m_entropy++;
-        StartCoroutine(WaitForBlood());
+        m_currentHP -= p_damage;
+        if (m_currentHP <= 0)
+        {
+            m_enemyCharacter.GetComponent<Animator>().SetBool("Alive", false);
+        }
+        else
+        {
+            m_enemyBlood.SetActive(true);
+            m_entropy++;
+            StartCoroutine(WaitForBlood());
+        }
     }
 
     private IEnumerator WaitForBlood()
@@ -93,7 +109,7 @@ public class EnemyController : MonoBehaviour
         m_enemyCharacter.transform.rotation = Quaternion.Lerp(l_originalRotation, l_nextRotation, m_speedMovementDelay);
 
         var l_target = m_targetControl.GetComponent<PlayerController>();
-        l_target.HandleHurt();
+        l_target.HandleHurt(50);
 
         l_direction = RandomMovement(-l_direction, l_direction);
 

@@ -7,10 +7,16 @@ public class PlayerController : MonoBehaviour
 {
     private GridLogic grid = new GridLogic();
 
+    [SerializeField] private float m_maxHP = 200.0f;
+    [SerializeField] private float m_currentHP = 200.0f;
+
     [SerializeField] private GameObject m_playerControl;
     [SerializeField] private GameObject m_playerCharacter;
     [SerializeField] private GameObject m_playerBlood;
     [SerializeField] public bool m_isMoving = false;
+
+    private float m_lastCure;
+    private float m_lastAttack;
 
     private void Start()
     {
@@ -19,6 +25,13 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        if (m_currentHP <= 0)
+        {
+            HandleRevive();
+            return;
+        }
+
+        HandleCure();
         HandleAttack();
         if (m_isMoving) {
             return;
@@ -28,36 +41,85 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public void HandleHurt()
+    private void HandleRevive()
     {
-        m_playerBlood.SetActive(true);
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            m_currentHP = m_maxHP;
+            m_playerCharacter.GetComponent<Animator>().SetBool("Alive", true);
+        }
+    }
 
-        StartCoroutine(WaitForBlood());
+    private void HandleCure()
+    {
+        if (Time.time - m_lastCure < 1) // 1 seconds cooldown
+        {
+            return;
+        }
+        if (Input.GetKeyDown(KeyCode.U))
+        {
+            m_lastCure = Time.time;
+            m_currentHP += 50;
+            if (m_currentHP > m_maxHP)
+            {
+                m_currentHP = m_maxHP;
+            }
+        }
+    }
+
+    public void HandleHurt(float p_damage)
+    {
+        m_currentHP -= p_damage;
+        if (m_currentHP <= 0)
+        {
+            m_playerCharacter.GetComponent<Animator>().SetBool("Alive", false);
+        }
+        else
+        {
+            m_playerBlood.SetActive(true);
+            StartCoroutine(WaitForBlood());
+        }
     }
 
     private IEnumerator WaitForBlood()
     {
         yield return new WaitForSeconds(0.3f);
-
         m_playerBlood.SetActive(false);
     }
 
     private void HandleAttack()
     {
+        if (Time.time - m_lastAttack < 1) // 1 seconds cooldown
+        {
+            return;
+        }
+
         if (Input.GetKeyDown(KeyCode.LeftControl) ||
             Input.GetKeyDown(KeyCode.RightControl) )
         {
             var l_target = GameObject.FindGameObjectWithTag("Enemy").GetComponent<EnemyController>();
             if (l_target != null)
             {
+                m_lastAttack = Time.time;
+
                 Vector3 l_difference = l_target.transform.position - m_playerControl.transform.position;
                 float l_distance = l_difference.magnitude;
                 Quaternion l_looking = m_playerCharacter.transform.localRotation.normalized;
 
-                if (l_distance < 14) {
+                if (l_distance < 14) { 
+                    // is front the player?
+
+                    bool l_hit = Physics.Raycast(m_playerControl.transform.position, l_looking * Vector3.forward, out RaycastHit l_hitInfo, 14.0f, LayerMask.GetMask("Enemy"));
+                    if (!l_hit)
+                    {
+                        return;
+                    }
+
+                    Debug.Log(l_hitInfo.collider.name);
+
                     Debug.Log("target" + l_distance + l_looking);
 
-                    l_target.HandleHurt();
+                    l_target.HandleHurt(50);
                 }
             }
         }
