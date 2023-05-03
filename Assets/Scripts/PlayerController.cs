@@ -87,6 +87,38 @@ public class PlayerController : MonoBehaviour
         m_playerBlood.SetActive(false);
     }
 
+    private EnemyController IsEnemyIn(Vector3 p_direction)
+    {
+        var l_target = GameObject.FindGameObjectWithTag("Enemy").GetComponent<EnemyController>();
+        if (l_target != null)
+        {
+
+            Vector3 l_difference = l_target.transform.position - m_playerControl.transform.position;
+            float l_distance = l_difference.magnitude;
+            Quaternion l_looking = m_playerCharacter.transform.localRotation.normalized;
+
+            if (l_distance < 14)
+            {
+                // is front the player?
+
+                bool l_hit = Physics.Raycast(m_playerControl.transform.position, l_looking * p_direction, out RaycastHit l_hitInfo, 14.0f, LayerMask.GetMask("Enemy"));
+                if (!l_hit)
+                {
+                    return null;
+                }
+
+                Debug.Log(l_hitInfo.collider.name);
+
+                Debug.Log("target" + l_distance + l_looking);
+
+                return l_target;
+                //l_target.HandleHurt(50);
+            }
+        }
+
+        return null;
+    }
+
     private void HandleAttack()
     {
         if (Time.time - m_lastAttack < 1) // 1 seconds cooldown
@@ -97,30 +129,13 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.LeftControl) ||
             Input.GetKeyDown(KeyCode.RightControl) )
         {
-            var l_target = GameObject.FindGameObjectWithTag("Enemy").GetComponent<EnemyController>();
+
+            m_lastAttack = Time.time;
+
+            var l_target = IsEnemyIn(Vector3.forward);
             if (l_target != null)
-            {
-                m_lastAttack = Time.time;
-
-                Vector3 l_difference = l_target.transform.position - m_playerControl.transform.position;
-                float l_distance = l_difference.magnitude;
-                Quaternion l_looking = m_playerCharacter.transform.localRotation.normalized;
-
-                if (l_distance < 14) { 
-                    // is front the player?
-
-                    bool l_hit = Physics.Raycast(m_playerControl.transform.position, l_looking * Vector3.forward, out RaycastHit l_hitInfo, 14.0f, LayerMask.GetMask("Enemy"));
-                    if (!l_hit)
-                    {
-                        return;
-                    }
-
-                    Debug.Log(l_hitInfo.collider.name);
-
-                    Debug.Log("target" + l_distance + l_looking);
-
-                    l_target.HandleHurt(50);
-                }
+            { 
+                l_target.HandleHurt(50);
             }
         }
     }
@@ -153,7 +168,12 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
-        m_playerCharacter.GetComponent<Animator>().SetTrigger("Running");
+        if (IsEnemyIn(l_direction))
+        {
+            return; // Can't move
+        }
+
+        m_playerCharacter.GetComponent<Animator>().SetBool("Running",true);
         m_isMoving = true;
         StartCoroutine(grid.Movement(m_playerControl, m_playerCharacter, l_direction, 0.0f));
     }

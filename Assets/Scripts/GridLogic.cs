@@ -37,14 +37,15 @@ public class GridLogic : MonoBehaviour
         p_control.transform.localPosition = l_nextControlPosition;
         p_character.transform.localPosition = Vector3.zero;
 
-        UpdateControlStateMovement(p_control, false);
+        UpdateControlStateMovement(p_control, p_character, false);
     }
 
-    private void UpdateControlStateMovement(GameObject p_element, bool p_isMoving)
+    private void UpdateControlStateMovement(GameObject p_element, GameObject p_character, bool p_isMoving)
     {
         if (p_element.TryGetComponent<PlayerController>(out var l_player))
         {
             l_player.m_isMoving = p_isMoving;
+            p_character.GetComponent<Animator>().SetBool("Running", p_isMoving);
         }
 
         if (p_element.TryGetComponent<EnemyController>(out var l_enemy))
