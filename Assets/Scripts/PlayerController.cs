@@ -2,10 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting.Dependencies.NCalc;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class PlayerController : MonoBehaviour
 {
     private GridLogic grid = new GridLogic();
+    private Vector3 m_direction = Vector3.zero;
 
     [SerializeField] private float m_maxHP = 200.0f;
     [SerializeField] private float m_currentHP = 200.0f;
@@ -27,10 +29,14 @@ public class PlayerController : MonoBehaviour
     private float m_lastCure;
     private float m_lastAttack;
 
+    private Vector3 m_fixUp;
+
     private void Start()
     {
         m_playerCharacter.transform.localPosition = Vector3.zero;
         m_audioSource = GetComponent<AudioSource>();
+        m_direction = Vector3.zero;
+        m_fixUp = (transform.up * 4);
     }
 
     void Update()
@@ -49,6 +55,31 @@ public class PlayerController : MonoBehaviour
         {
             HandleMovement();
         }
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        if (m_playerControl == null || m_direction == Vector3.zero)
+        {
+            return;
+        }
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(m_playerControl.transform.position + m_fixUp, 
+            m_playerControl.transform.position + m_fixUp + m_direction * (grid.m_tileGridSize*1.7f));
+        Gizmos.DrawWireSphere(m_playerControl.transform.position + m_fixUp, 5.0f);
+    }
+
+    private EnemyController IsEnemyInFront()
+    {
+        bool l_hit = Physics.SphereCast(m_playerControl.transform.position + m_fixUp,
+            5.0f, m_playerControl.transform.position + m_fixUp + m_direction, 
+            out RaycastHit l_hitInfo, (grid.m_tileGridSize * 1.7f), LayerMask.GetMask("Enemy"));
+        if (l_hit)
+        {
+            return l_hitInfo.collider.GetComponent<EnemyController>();
+        }
+
+        return null;             
     }
 
     private void HandleRevive()
@@ -102,37 +133,6 @@ public class PlayerController : MonoBehaviour
         m_playerBlood.SetActive(false);
     }
 
-    private EnemyController IsEnemyIn(Vector3 p_direction)
-    {
-        var l_target = GameObject.FindGameObjectWithTag("Enemy").GetComponent<EnemyController>();
-        if (l_target != null)
-        {
-
-            Vector3 l_difference = l_target.transform.position - m_playerControl.transform.position;
-            float l_distance = l_difference.magnitude;
-            Quaternion l_looking = m_playerCharacter.transform.localRotation.normalized;
-
-            if (l_distance < 14)
-            {
-                // is front the player?
-
-                bool l_hit = Physics.Raycast(m_playerControl.transform.position, l_looking * p_direction, out RaycastHit l_hitInfo, 14.0f, LayerMask.GetMask("Enemy"));
-                if (!l_hit)
-                {
-                    return null;
-                }
-
-                Debug.Log(l_hitInfo.collider.name);
-
-                Debug.Log("target" + l_distance + l_looking);
-
-                return l_target;
-            }
-        }
-
-        return null;
-    }
-
     private void HandleAttack()
     {
         if (Time.time - m_lastAttack < 1) // 1 seconds cooldown
@@ -148,7 +148,7 @@ public class PlayerController : MonoBehaviour
 
             m_playerCharacter.GetComponent<Animator>().SetTrigger("PhysicalAttack");
 
-            var l_target = IsEnemyIn(Vector3.forward);
+            var l_target = IsEnemyInFront();
             if (l_target != null)
             { 
                 m_audioSource.PlayOneShot(m_audioAttackHit);
@@ -188,14 +188,15 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
-        if (IsEnemyIn(l_direction))  // Can't move only rotate
+        if (!grid.PlayerCanMove(m_playerControl, l_direction))  // Can't move only rotate
         {
-            m_playerCharacter.transform.rotation = Quaternion.Lerp(transform.transform.rotation, Quaternion.LookRotation(l_direction), grid.m_timeToMove);
+            m_playerCharacter.transform.rotation = Quaternion.LookRotation(l_direction);
 
             return;
         }
 
         m_playerCharacter.GetComponent<Animator>().SetBool("Running",true);
+        m_direction = l_direction;
         m_isMoving = true;
         StartCoroutine(grid.Movement(m_playerControl, m_playerCharacter, l_direction, 0.0f));
     }

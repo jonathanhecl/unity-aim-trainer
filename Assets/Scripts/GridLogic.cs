@@ -9,6 +9,22 @@ public class GridLogic : MonoBehaviour
 {
     public readonly float m_timeToMove = 0.2f;
     public readonly float m_tileGridSize = 10.0f;
+    public readonly float m_limitPlayer = 80.0f;
+
+    public bool PlayerCanMove(GameObject p_playerControl, Vector3 p_direction)
+    {
+        var l_originalPosition = p_playerControl.transform.localPosition;
+        var l_nextPosition = l_originalPosition + (p_direction * m_tileGridSize);
+
+        if (l_nextPosition.x <= -m_limitPlayer || l_nextPosition.x >= m_limitPlayer ||
+            l_nextPosition.z <= -m_limitPlayer || l_nextPosition.z >= m_limitPlayer)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
 
     public IEnumerator Movement(GameObject p_control, GameObject p_character, Vector3 p_direction, float p_extraDelay)
     {
