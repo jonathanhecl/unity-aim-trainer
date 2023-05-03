@@ -54,7 +54,9 @@ public class EnemyController : MonoBehaviour
 
     public void HandleHurt(float p_damage)
     {
-        m_currentHP -= p_damage;
+        //m_currentHP -= p_damage;
+        m_enemyCharacter.GetComponent<Animator>().SetTrigger("Hit");
+
         if (m_currentHP <= 0)
         {
             m_enemyCharacter.GetComponent<Animator>().SetBool("Alive", false);
@@ -70,7 +72,6 @@ public class EnemyController : MonoBehaviour
     private IEnumerator WaitForBlood()
     {
         yield return new WaitForSeconds(0.3f);
-
         m_enemyBlood.SetActive(false);
     }
 

@@ -69,7 +69,8 @@ public class PlayerController : MonoBehaviour
 
     public void HandleHurt(float p_damage)
     {
-        m_currentHP -= p_damage;
+        //m_currentHP -= p_damage;
+        m_playerCharacter.GetComponent<Animator>().SetTrigger("Hit");
         if (m_currentHP <= 0)
         {
             m_playerCharacter.GetComponent<Animator>().SetBool("Alive", false);
@@ -112,7 +113,6 @@ public class PlayerController : MonoBehaviour
                 Debug.Log("target" + l_distance + l_looking);
 
                 return l_target;
-                //l_target.HandleHurt(50);
             }
         }
 
@@ -131,6 +131,8 @@ public class PlayerController : MonoBehaviour
         {
 
             m_lastAttack = Time.time;
+
+            m_playerCharacter.GetComponent<Animator>().SetTrigger("PhysicalAttack");
 
             var l_target = IsEnemyIn(Vector3.forward);
             if (l_target != null)
