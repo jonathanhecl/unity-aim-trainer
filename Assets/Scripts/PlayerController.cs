@@ -13,12 +13,12 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float m_currentHP = 200.0f;
 
     [SerializeField] private GameObject m_playerControl;
-    [SerializeField] private GameObject m_playerCharacter;
+    [SerializeField] public GameObject m_playerCharacter;
     [SerializeField] private GameObject m_playerDamageArea;
     [SerializeField] private GameObject m_playerBlood;
     [SerializeField] public bool m_isMoving = false;
 
-    private AudioSource m_audioSource;
+    public AudioSource m_audioSource;
 
     [SerializeField] public AudioClip m_audioAttackMiss;
     [SerializeField] public AudioClip m_audioAttackHit;
@@ -26,9 +26,11 @@ public class PlayerController : MonoBehaviour
     [SerializeField] public AudioClip m_audioHurt;
     [SerializeField] public AudioClip m_audioDeath;
     [SerializeField] public AudioClip m_audioRevive;
+    [SerializeField] public AudioClip m_audioSpellAttack;
 
     private float m_lastCure;
     private float m_lastAttack;
+    private float m_lastSpell;
 
     private Vector3 m_fixUp;
 
@@ -54,6 +56,7 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
+        HandleSpells();
         HandleCure();
         HandleAttack();
         if (m_isMoving) {
@@ -106,6 +109,21 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private void HandleSpells()
+    {
+        if (Time.time - m_lastSpell < 1) // 1 seconds cooldown
+        {
+            return;
+        }
+
+        if (Input.GetKeyDown(KeyCode.H))
+        { 
+            m_lastSpell = Time.time;
+            GameManager.GetInstance().SetSpell(GameManager.SpellLoaded.Attack);
+            Debug.Log("Spell Attack Loaded");
+        }
+    }
+
     private void HandleCure()
     {
         if (Time.time - m_lastCure < 1) // 1 seconds cooldown
@@ -121,6 +139,8 @@ public class PlayerController : MonoBehaviour
             {
                 m_currentHP = m_maxHP;
             }
+
+            Debug.Log("Player has " + m_currentHP + " HP");
         }
     }
 
@@ -132,6 +152,7 @@ public class PlayerController : MonoBehaviour
         }
         if (!GameManager.GetInstance().m_inmortalPlayer) {
             m_currentHP -= p_damage;
+            Debug.Log("Player has " + m_currentHP + " HP");
         }
         m_playerCharacter.transform.localPosition = Vector3.zero; 
         m_playerCharacter.GetComponent<Animator>().SetTrigger("Hit");

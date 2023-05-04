@@ -55,13 +55,21 @@ public class EnemyController : MonoBehaviour
 
     private void OnMouseDown()
     {
-        /*
+        if (m_currentHP <= 0)
+        {
+            return;
+        }
+
         if (Input.GetMouseButtonDown(0))
         {
-            // TODO: The sound from the spell if from the player, not the enemy
-            HandleHurt(70.0f);
+            var l_spell = GameManager.GetInstance().UseSpell();
+            if (l_spell == GameManager.SpellLoaded.Attack)
+            {
+                GameManager.GetInstance().SetSpell(GameManager.SpellLoaded.None);
+                m_entropy++; // More entropy with spell attack
+                HandleHurt(50.0f);
+            }
         }
-        */
     }
 
     public void HandleHurt(float p_damage)
@@ -70,8 +78,11 @@ public class EnemyController : MonoBehaviour
         {
             return;
         }
+
         m_currentHP -= p_damage;
         m_enemyCharacter.GetComponent<Animator>().SetTrigger("Hit");
+
+        Debug.Log("Enemy has " + m_currentHP + " HP");
 
         if (m_currentHP <= 0)
         {

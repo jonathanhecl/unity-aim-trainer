@@ -26,7 +26,8 @@ Con la tecla CTRL hacemos daño físico al enemigo que se encuentre delante.
 
 Con la tecla U nos podemos curar HP.
 
-Con el cursor podemos cargar el hechizo de ataque y descargarlo sobre el enemigo. Si erramos el ataque, perdemos la carga y debemos volver a cargarlo.
+Con el cursor podemos cargar el hechizo de ataque y descargarlo sobre el enemigo (con la Tecla H). 
+Si erramos el ataque, perdemos la carga y debemos volver a cargarlo.
 
 En caso de morir podemos revivirnos con la tecla R.
 
@@ -46,6 +47,3 @@ Los enemigos pueden tener de 50 a 800 HP.
 ## Hechizos
 
 - Daño - Hace 50 daño sobre el enemigo al clickearlo. Se puede usar solo sobre un enemigo. No se puede usar a mayor distancia que la de juego. Tiene intervalo de 1 por segundo.
-- Cura - Cura 50 daño sobre el jugador al clickearlo. Se puede usar solo sobre el jugador. Tiene intervalo de 1 por segundo.
-- Paralizar - Deja detenido al personaje en su movimiento. No se puede usar a mayor distancia que la de juego. Require 1 segundo para cargar, y 1 para volver a usarlo.
-- Quitar Parálisis - Remueve el efecto de parálisis del movimiento. Require 1 segundo para cargar, y 1 para volver a usarlo.

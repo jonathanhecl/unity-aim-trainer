@@ -8,6 +8,13 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject m_enemyPrefab;
 
     public bool m_inmortalPlayer = false;
+    private SpellLoaded m_spellLoaded = 0;
+    
+    public enum SpellLoaded { 
+        None, 
+        Attack, 
+        Cure, 
+        Paralysis };
 
     private static GameManager m_instance;
 
@@ -25,6 +32,26 @@ public class GameManager : MonoBehaviour
     public static GameManager GetInstance()
     {
         return m_instance;
+    }
+
+    public void SetSpell(SpellLoaded spellType)
+    {
+        m_spellLoaded = spellType;
+    }
+
+    public SpellLoaded UseSpell()
+    {
+        var l_prevSpell = m_spellLoaded;
+
+        if (m_spellLoaded == SpellLoaded.Attack)
+        {
+            m_playerControl.m_playerCharacter.GetComponent<Animator>().SetTrigger("MagicAttack");
+            m_playerControl.m_audioSource.PlayOneShot(m_playerControl.m_audioSpellAttack);
+        }
+
+        m_spellLoaded = SpellLoaded.None;
+
+        return l_prevSpell;
     }
 
     public void NewEnemy()

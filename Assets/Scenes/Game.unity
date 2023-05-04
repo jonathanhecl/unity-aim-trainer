@@ -216,9 +216,9 @@ Rigidbody:
   m_Drag: 0
   m_AngularDrag: 0.05
   m_UseGravity: 0
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 116
   m_CollisionDetection: 0
 --- !u!4 &56174515 stripped
 Transform:
@@ -345,12 +345,14 @@ MonoBehaviour:
   m_playerDamageArea: {fileID: 729713300}
   m_playerBlood: {fileID: 410700804}
   m_isMoving: 0
+  m_audioSource: {fileID: 0}
   m_audioAttackMiss: {fileID: 8300000, guid: eb51dfa444d5ff14da77f1f7df46eddf, type: 3}
   m_audioAttackHit: {fileID: 8300000, guid: d8dbd03a1f4fd504c80377b6b4bd9d84, type: 3}
   m_audioCure: {fileID: 8300000, guid: e2861bff52b599745acd935a22511bb5, type: 3}
   m_audioHurt: {fileID: 8300000, guid: d38cff5096d90c3428fd05562f4fe712, type: 3}
   m_audioDeath: {fileID: 8300000, guid: a1214e3386921ad439ccae39349254d1, type: 3}
   m_audioRevive: {fileID: 8300000, guid: 52a53be15f7bd8a45bed9b672e75a800, type: 3}
+  m_audioSpellAttack: {fileID: 8300000, guid: 28ae111d51a67eb43801e5b34e7fba6c, type: 3}
 --- !u!4 &193544072
 Transform:
   m_ObjectHideFlags: 0
@@ -2776,8 +2778,9 @@ GameObject:
   - component: {fileID: 1686199023}
   - component: {fileID: 1686199022}
   - component: {fileID: 1686199021}
+  - component: {fileID: 1686199025}
   m_Layer: 0
-  m_Name: Plane
+  m_Name: Floor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2862,6 +2865,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1686199025
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1686199020}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82680634531f2474ebbd9c2cbd00a0e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1707818395
 PrefabInstance:
   m_ObjectHideFlags: 0
