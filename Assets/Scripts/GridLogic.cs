@@ -25,6 +25,16 @@ public class GridLogic : MonoBehaviour
         return true;
     }
 
+    public Vector3 PositionGridNormalize(Vector3 p_position)
+    {
+        Vector3 result = p_position;
+
+        result.x = Mathf.FloorToInt(p_position.x);
+        result.z = Mathf.FloorToInt(p_position.z);
+
+        return result;
+    }
+
 
     public IEnumerator Movement(GameObject p_control, GameObject p_character, Vector3 p_direction, float p_extraDelay)
     {

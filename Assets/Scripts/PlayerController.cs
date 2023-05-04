@@ -6,7 +6,7 @@ using UnityEngine.UIElements;
 
 public class PlayerController : MonoBehaviour
 {
-    private GridLogic grid = new GridLogic();
+    private GridLogic grid;
     private Vector3 m_direction = Vector3.zero;
 
     [SerializeField] private float m_maxHP = 200.0f;
@@ -14,6 +14,7 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] private GameObject m_playerControl;
     [SerializeField] private GameObject m_playerCharacter;
+    [SerializeField] private GameObject m_playerDamageArea;
     [SerializeField] private GameObject m_playerBlood;
     [SerializeField] public bool m_isMoving = false;
 
@@ -33,6 +34,7 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
+        grid = gameObject.AddComponent<GridLogic>();
         m_playerCharacter.transform.localPosition = Vector3.zero;
         m_audioSource = GetComponent<AudioSource>();
         m_direction = Vector3.zero;
@@ -41,6 +43,11 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.X))
+        {
+            GameManager.GetInstance().NewEnemy();
+        }
+
         if (m_currentHP <= 0)
         {
             HandleRevive();
@@ -71,12 +78,19 @@ public class PlayerController : MonoBehaviour
 
     private EnemyController IsEnemyInFront()
     {
+        /*
         bool l_hit = Physics.SphereCast(m_playerControl.transform.position + m_fixUp,
             5.0f, m_playerControl.transform.position + m_fixUp + m_direction, 
             out RaycastHit l_hitInfo, (grid.m_tileGridSize * 1.7f), LayerMask.GetMask("Enemy"));
         if (l_hit)
         {
             return l_hitInfo.collider.GetComponent<EnemyController>();
+        }
+        */
+
+        if (m_playerDamageArea.GetComponent<DamageAreaController>().m_enemyController != null)
+        {
+            return m_playerDamageArea.GetComponent<DamageAreaController>().m_enemyController;
         }
 
         return null;             
@@ -112,12 +126,20 @@ public class PlayerController : MonoBehaviour
 
     public void HandleHurt(float p_damage)
     {
-        //m_currentHP -= p_damage;
+        if (m_currentHP <= 0)
+        {
+            return;
+        }
+        if (!GameManager.GetInstance().m_inmortalPlayer) {
+            m_currentHP -= p_damage;
+        }
+        m_playerCharacter.transform.localPosition = Vector3.zero; 
         m_playerCharacter.GetComponent<Animator>().SetTrigger("Hit");
         if (m_currentHP <= 0)
         {
             m_audioSource.PlayOneShot(m_audioDeath);
             m_playerCharacter.GetComponent<Animator>().SetBool("Alive", false);
+            GameManager.GetInstance().HandleGameOver();
         }
         else
         {
@@ -197,6 +219,7 @@ public class PlayerController : MonoBehaviour
 
         m_playerCharacter.GetComponent<Animator>().SetBool("Running",true);
         m_direction = l_direction;
+        m_playerDamageArea.transform.position = m_playerCharacter.transform.position + l_direction * (grid.m_tileGridSize);
         m_isMoving = true;
         StartCoroutine(grid.Movement(m_playerControl, m_playerCharacter, l_direction, 0.0f));
     }

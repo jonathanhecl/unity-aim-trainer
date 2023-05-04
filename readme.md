@@ -30,6 +30,8 @@ Con el cursor podemos cargar el hechizo de ataque y descargarlo sobre el enemigo
 
 En caso de morir podemos revivirnos con la tecla R.
 
+PARA DEPURAR: Con la tecla X podemos crear más enemigos.
+
 ## Stats
 
 El personaje principal puede configurar su vida de 50 a 800 HP.
