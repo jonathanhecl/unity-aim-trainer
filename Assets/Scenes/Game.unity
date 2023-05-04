@@ -1978,7 +1978,7 @@ MonoBehaviour:
   m_playerControl: {fileID: 193544071}
   m_enemyPrefab: {fileID: 175198389748043035, guid: 62120744eb250174f962aa6059c9d282,
     type: 3}
-  m_inmortalPlayer: 1
+  m_inmortalPlayer: 0
 --- !u!4 &1068915521
 Transform:
   m_ObjectHideFlags: 0
