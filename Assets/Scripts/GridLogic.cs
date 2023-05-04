@@ -29,8 +29,8 @@ public class GridLogic : MonoBehaviour
     {
         Vector3 result = p_position;
 
-        result.x = Mathf.FloorToInt(p_position.x);
-        result.z = Mathf.FloorToInt(p_position.z);
+        result.x = Mathf.Ceil(p_position.x);
+        result.z = Mathf.Ceil(p_position.z);
 
         return result;
     }

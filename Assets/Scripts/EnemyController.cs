@@ -20,7 +20,7 @@ public class EnemyController : MonoBehaviour
     [SerializeField] public GameObject m_targetControl;
     [SerializeField] public bool m_isMoving = false;
     [SerializeField] private float m_speedMovementDelay = 0.2f;
-    [SerializeField] private int m_tilesDistanceToMagic = 10;
+    //[SerializeField] private int m_tilesDistanceToMagic = 10;
 
     private AudioSource m_audioSource;
 
@@ -100,16 +100,6 @@ public class EnemyController : MonoBehaviour
 
         l_difference = grid.PositionGridNormalize(l_difference);
 
-        if (Math.Abs(l_difference.x) < 1)
-        {
-            l_difference.x = 0;
-        }
-
-        if (Math.Abs(l_difference.z) < 1)
-        {
-            l_difference.z = 0;
-        }
-
         if (Math.Abs(l_difference.x) <= grid.m_tileGridSize && Math.Abs(l_difference.z) == 0)
         {
             if (l_difference.x < 0)
@@ -140,6 +130,13 @@ public class EnemyController : MonoBehaviour
             var l_nextRotation = Quaternion.LookRotation(l_direction);
 
             m_enemyCharacter.transform.rotation = Quaternion.Lerp(l_originalRotation, l_nextRotation, m_speedMovementDelay);
+        } else
+        {
+            l_direction = -l_difference.normalized;
+
+            m_isMoving = true;
+            StartCoroutine(grid.Movement(m_enemyControl, m_enemyCharacter, l_direction, m_speedMovementDelay));
+            return;
         }
 
         var l_target = m_targetControl.GetComponent<PlayerController>();
@@ -152,16 +149,12 @@ public class EnemyController : MonoBehaviour
 
         l_direction = RandomMovement(-l_direction, l_direction);
 
-        Debug.Log("Attack->New direction: " + l_direction);
-
         m_isMoving = true;
         StartCoroutine(grid.Movement(m_enemyControl, m_enemyCharacter, l_direction, m_speedMovementDelay));
     }
 
     private Vector3 RandomMovement(Vector3 p_direction, Vector3 p_invalid)
     {
-        return p_direction;
-
         var result = new Vector3();
         var num = UnityEngine.Random.Range(0.0f, 5.0f);
 
@@ -209,25 +202,12 @@ public class EnemyController : MonoBehaviour
 
         l_difference = grid.PositionGridNormalize(l_difference);
 
-        if (Math.Abs(l_difference.x) < 1)
-        {
-            l_difference.x = 0;
-        }
-
-        if (Math.Abs(l_difference.z) < 1)
-        {
-            l_difference.z = 0;
-        }
-
-        Debug.Log("Enemy diff" + l_difference);
-
         if (Math.Abs(l_difference.x) > Math.Abs(l_difference.z))
         {
             if (Math.Abs(l_difference.x) <= grid.m_tileGridSize &&
                 !(Math.Abs(l_difference.x) < 1) &&
                 Math.Abs(l_difference.z) == 0)
             {
-                Debug.Log("Xabs: " + Math.Abs(l_difference.x));
                 AttackTarget();
                 return;
             }
@@ -245,7 +225,6 @@ public class EnemyController : MonoBehaviour
                 !(Math.Abs(l_difference.z) < 1) &&
                 Math.Abs(l_difference.x) == 0)
             {
-                Debug.Log("Zabs: " + Math.Abs(l_difference.z));
                 AttackTarget();
                 return;
             }
@@ -258,8 +237,6 @@ public class EnemyController : MonoBehaviour
                 l_direction = -transform.forward;
             }
         }
-
-        Debug.Log("New direction : " + l_direction);
 
         l_direction = RandomMovement(l_direction, -l_direction);
 
