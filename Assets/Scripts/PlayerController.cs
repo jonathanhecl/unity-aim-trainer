@@ -47,7 +47,7 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.X))
         {
-            GameManager.GetInstance().NewEnemy();
+            GameManager.GetInstance().CreateEnemy();
         }
 
         if (m_currentHP <= 0)

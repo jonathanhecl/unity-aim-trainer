@@ -6,6 +6,8 @@ public class GameManager : MonoBehaviour
 {
     [SerializeField] private PlayerController m_playerControl;
     [SerializeField] private GameObject m_enemyPrefab;
+    [SerializeField] private Transform[] m_respawnPosition = new Transform[4];
+    [SerializeField] private List<GameObject> m_enemies = new List<GameObject>();
 
     public bool m_inmortalPlayer = false;
     private SpellLoaded m_spellLoaded = 0;
@@ -29,9 +31,19 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        CreateEnemy();
+    }
+
     public static GameManager GetInstance()
     {
         return m_instance;
+    }
+
+    public PlayerController GetPlayerControl()
+    {
+        return m_playerControl;
     }
 
     public void SetSpell(SpellLoaded spellType)
@@ -43,10 +55,18 @@ public class GameManager : MonoBehaviour
     {
         var l_prevSpell = m_spellLoaded;
 
-        if (m_spellLoaded == SpellLoaded.Attack)
+        switch (m_spellLoaded)
         {
-            m_playerControl.m_playerCharacter.GetComponent<Animator>().SetTrigger("MagicAttack");
-            m_playerControl.m_audioSource.PlayOneShot(m_playerControl.m_audioSpellAttack);
+            case SpellLoaded.Attack:
+                m_playerControl.m_playerCharacter.GetComponent<Animator>().SetTrigger("MagicAttack");
+                m_playerControl.m_audioSource.PlayOneShot(m_playerControl.m_audioSpellAttack);
+                break;
+            case SpellLoaded.Cure:
+                //m_playerControl.m_audioSource.PlayOneShot(m_playerControl.m_audioSpellCure);
+                break;
+            case SpellLoaded.Paralysis:
+                //m_playerControl.m_audioSource.PlayOneShot(m_playerControl.m_audioSpellParalysis);
+                break;
         }
 
         m_spellLoaded = SpellLoaded.None;
@@ -54,11 +74,15 @@ public class GameManager : MonoBehaviour
         return l_prevSpell;
     }
 
-    public void NewEnemy()
+    public void CreateEnemy()
     {
-        var obj = Instantiate(m_enemyPrefab, new Vector3(-130.0f, 0.0f, 0.0f), Quaternion.identity);
+        var l_respawnPosition = m_respawnPosition[Random.Range(0, m_respawnPosition.Length)];
 
-        EnemyController enemyController = obj.GetComponent<EnemyController>();
+        var newEnemy = Instantiate(m_enemyPrefab, l_respawnPosition.position, Quaternion.identity);
+
+        m_enemies.Add(newEnemy);
+
+        EnemyController enemyController = newEnemy.GetComponent<EnemyController>();
         enemyController.m_targetControl = m_playerControl.gameObject;
     }
 

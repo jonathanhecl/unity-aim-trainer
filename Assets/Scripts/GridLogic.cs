@@ -9,7 +9,7 @@ public class GridLogic : MonoBehaviour
 {
     public readonly float m_timeToMove = 0.2f;
     public readonly float m_tileGridSize = 10.0f;
-    public readonly float m_limitPlayer = 80.0f;
+    public readonly float m_limitPlayer = 90.0f;
 
     public bool PlayerCanMove(GameObject p_playerControl, Vector3 p_direction)
     {
