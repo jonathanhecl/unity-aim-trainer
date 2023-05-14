@@ -17,7 +17,7 @@ public class MenuController : MonoBehaviour
 
     public void PlayGame()
     {
-        UnityEngine.SceneManagement.SceneManager.LoadScene("Game");
+        UnityEngine.SceneManagement.SceneManager.LoadScene("GameScene");
     }
 
     public void QuitGame()

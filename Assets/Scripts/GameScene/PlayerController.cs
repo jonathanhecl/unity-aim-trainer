@@ -9,9 +9,6 @@ public class PlayerController : MonoBehaviour
     private GridLogic grid;
     private Vector3 m_direction = Vector3.zero;
 
-    [SerializeField] private float m_maxHP = 200.0f;
-    [SerializeField] private float m_currentHP = 200.0f;
-
     [SerializeField] private GameObject m_playerControl;
     [SerializeField] public GameObject m_playerCharacter;
     [SerializeField] private GameObject m_playerDamageArea;
@@ -28,9 +25,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] public AudioClip m_audioRevive;
     [SerializeField] public AudioClip m_audioSpellAttack;
 
-    private float m_lastCure;
     private float m_lastAttack;
-    private float m_lastSpell;
 
     private Vector3 m_fixUp;
 
@@ -50,7 +45,7 @@ public class PlayerController : MonoBehaviour
             GameManager.GetInstance().CreateEnemy();
         }
 
-        if (m_currentHP <= 0)
+        if (GameManager.GetInstance().GetPlayerHP() <= 0)
         {
             HandleRevive();
             return;
@@ -81,16 +76,6 @@ public class PlayerController : MonoBehaviour
 
     private EnemyController IsEnemyInFront()
     {
-        /*
-        bool l_hit = Physics.SphereCast(m_playerControl.transform.position + m_fixUp,
-            5.0f, m_playerControl.transform.position + m_fixUp + m_direction, 
-            out RaycastHit l_hitInfo, (grid.m_tileGridSize * 1.7f), LayerMask.GetMask("Enemy"));
-        if (l_hit)
-        {
-            return l_hitInfo.collider.GetComponent<EnemyController>();
-        }
-        */
-
         if (m_playerDamageArea.GetComponent<DamageAreaController>().m_enemyController != null)
         {
             return m_playerDamageArea.GetComponent<DamageAreaController>().m_enemyController;
@@ -104,59 +89,50 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.R))
         {
             m_audioSource.PlayOneShot(m_audioRevive);
-            m_currentHP = m_maxHP;
+            GameManager.GetInstance().ResetPlayerHP();
             m_playerCharacter.GetComponent<Animator>().SetBool("Alive", true);
+            GameManager.GetInstance().ResetScore();
         }
     }
 
     private void HandleSpells()
     {
-        if (Time.time - m_lastSpell < 1) // 1 seconds cooldown
-        {
-            return;
-        }
 
         if (Input.GetKeyDown(KeyCode.H))
-        { 
-            m_lastSpell = Time.time;
+        {
+            if (!GameManager.GetInstance().CanUseSpell())
+            {
+                return;
+            }
             GameManager.GetInstance().SetSpell(GameManager.SpellLoaded.Attack);
-            Debug.Log("Spell Attack Loaded");
         }
     }
 
     private void HandleCure()
     {
-        if (Time.time - m_lastCure < 1) // 1 seconds cooldown
-        {
-            return;
-        }
         if (Input.GetKeyDown(KeyCode.U))
         {
-            m_audioSource.PlayOneShot(m_audioCure);
-            m_lastCure = Time.time;
-            m_currentHP += 50;
-            if (m_currentHP > m_maxHP)
+            if (GameManager.GetInstance().UsePotion())
             {
-                m_currentHP = m_maxHP;
-            }
+                m_audioSource.PlayOneShot(m_audioCure);
 
-            Debug.Log("Player has " + m_currentHP + " HP");
+                GameManager.GetInstance().HandlePlayerDamage(-50);
+            }
         }
     }
 
     public void HandleHurt(float p_damage)
     {
-        if (m_currentHP <= 0)
+        if (GameManager.GetInstance().GetPlayerHP() <= 0)
         {
             return;
         }
         if (!GameManager.GetInstance().m_inmortalPlayer) {
-            m_currentHP -= p_damage;
-            Debug.Log("Player has " + m_currentHP + " HP");
+            GameManager.GetInstance().HandlePlayerDamage(p_damage);
         }
         m_playerCharacter.transform.localPosition = Vector3.zero; 
         m_playerCharacter.GetComponent<Animator>().SetTrigger("Hit");
-        if (m_currentHP <= 0)
+        if (GameManager.GetInstance().GetPlayerHP() <= 0)
         {
             m_audioSource.PlayOneShot(m_audioDeath);
             m_playerCharacter.GetComponent<Animator>().SetBool("Alive", false);

@@ -82,15 +82,15 @@ public class EnemyController : MonoBehaviour
         m_currentHP -= p_damage;
         m_enemyCharacter.GetComponent<Animator>().SetTrigger("Hit");
 
-        Debug.Log("Enemy has " + m_currentHP + " HP");
-
         if (m_currentHP <= 0)
         {
+            GameManager.GetInstance().AddScore(2);
             m_audioSource.PlayOneShot(m_audioDeath);
             m_enemyCharacter.GetComponent<Animator>().SetBool("Alive", false);
         }
         else
         {
+            GameManager.GetInstance().AddScore(1);
             m_audioSource.PlayOneShot(m_audioHurt);
             m_enemyBlood.SetActive(true);
             m_entropy++;
@@ -106,6 +106,11 @@ public class EnemyController : MonoBehaviour
 
     private void AttackTarget()
     {
+        if (GameManager.GetInstance().GetPlayerHP() <= 0)
+        {
+            return;
+        }
+
         Vector3 l_difference = m_enemyControl.transform.localPosition - m_targetControl.transform.localPosition;
         Vector3 l_direction = Vector3.zero;
 
