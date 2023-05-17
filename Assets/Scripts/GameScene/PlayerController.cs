@@ -25,8 +25,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] public AudioClip m_audioRevive;
     [SerializeField] public AudioClip m_audioSpellAttack;
 
-    private float m_lastAttack;
-
     private Vector3 m_fixUp;
 
     private void Start()
@@ -154,16 +152,12 @@ public class PlayerController : MonoBehaviour
 
     private void HandleAttack()
     {
-        if (Time.time - m_lastAttack < 1) // 1 seconds cooldown
-        {
-            return;
-        }
-
         if (Input.GetKeyDown(KeyCode.LeftControl) ||
             Input.GetKeyDown(KeyCode.RightControl) )
         {
-
-            m_lastAttack = Time.time;
+            if (!GameManager.GetInstance().UseSword()) {
+                return;
+            }
 
             m_playerCharacter.GetComponent<Animator>().SetTrigger("PhysicalAttack");
 

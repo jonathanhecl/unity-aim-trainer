@@ -4,31 +4,45 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+public struct SpellInfo
+{
+    public GameManager.SpellLoaded m_spellType;
+    public string m_name;
+    public float m_time;
+    public float m_interval;
+    public Image m_image;
+}
+
 public class GameManager : MonoBehaviour
 {
     [SerializeField] private PlayerController m_playerControl;
     [SerializeField] private GameObject m_enemyPrefab;
     [SerializeField] private Transform[] m_respawnPosition = new Transform[4];
-    [SerializeField] private GameObject m_spellsContent;
-    [SerializeField] private GameObject m_spellPrefab;
+
     [SerializeField] private List<GameObject> m_enemies = new List<GameObject>();
     [SerializeField] private TMP_Text m_scoreText;
     [SerializeField] private Slider m_playerHPSlider;
-    [SerializeField] private Image m_potionImage;
 
+    [SerializeField] private Image m_potionImage;
     [SerializeField] private float m_intervalPotion = 1.0f;
+
+    [SerializeField] private Image m_swordImage;
+    [SerializeField] private float m_intervalSword = 1.0f;
+
+    //[SerializeField] private GameObject m_spellsContent;
+    //[SerializeField] private GameObject m_spellPrefab;
+    [SerializeField] public List<SpellInfo> m_spellsList = new List<SpellInfo>();
+    [SerializeField] private Image m_spellImage;
     [SerializeField] private float m_intervalSpell = 1.0f;
 
     [SerializeField] private float m_maxHP = 200.0f;
-
 
     private int m_score = 0;
     private float m_playerHP = 0;
 
     private float m_timePotion = 1.0f;
+    private float m_timeSword = 1.0f;
     private float m_timeSpell = 1.0f;
-
-    private List<GameObject> m_spells = new List<GameObject>();
 
     public bool m_inmortalPlayer = false;
     private SpellLoaded m_spellLoaded = 0;
@@ -58,14 +72,13 @@ public class GameManager : MonoBehaviour
         Debug.Assert(m_playerHPSlider);
 
         m_timePotion = m_intervalPotion;
+        m_timeSword = m_intervalSword;
         m_timeSpell = m_intervalSpell;
 
         ResetScore();
         ResetPlayerHP();
 
         CreateEnemy();
-
-        LoadSpells();
     }
 
     private void Update()
@@ -81,6 +94,17 @@ public class GameManager : MonoBehaviour
             RefreshPotion();
         }
 
+        // Sword
+        if (m_timeSword < m_intervalSword)
+        {
+            m_timeSword += Time.deltaTime;
+            if (m_timeSword >= m_intervalSword)
+            {
+                m_timeSword = m_intervalSword;
+            }
+            RefreshSword();
+        }
+
         // Spell
         if (m_timeSpell < m_intervalSpell)
         {
@@ -89,7 +113,7 @@ public class GameManager : MonoBehaviour
             {
                 m_timeSpell = m_intervalSpell;
             }
-            RefreshSpells();
+            RefreshSpell();
         }
 
     }
@@ -162,16 +186,6 @@ public class GameManager : MonoBehaviour
         Debug.Log("Game Over");
     }
 
-    private void LoadSpells()
-    {
-        m_spells.Clear();
-        
-        var l_spellLabel = Instantiate(m_spellPrefab, m_spellsContent.transform);
-        l_spellLabel.GetComponent<Button>().onClick.AddListener(() => SetSpell(SpellLoaded.Attack));
-        l_spellLabel.GetComponentInChildren<TMP_Text>().text = "Magic Attack";
-        m_spells.Add(l_spellLabel);
-    }
-
     public void ResetScore()
     {
         m_score = 0;
@@ -241,20 +255,24 @@ public class GameManager : MonoBehaviour
         m_potionImage.fillAmount = (m_timePotion * 1 / m_intervalPotion) ;
     }
 
-    private void RefreshSpells()
+    public bool UseSword()
     {
-        if (m_timeSpell < m_intervalSpell)
+        if (m_timeSword < m_intervalSword)
         {
-            foreach (var l_spell in m_spells) { 
-                l_spell.GetComponent<Button>().interactable = false;
-            }
-            return;
+            return false;
         }
+        m_timeSword = 0.0f;
+        return true;
+    }
 
-        foreach (var l_spell in m_spells)
-        {
-            l_spell.GetComponent<Button>().interactable = true;
-        }
+    private void RefreshSword()
+    {
+        m_swordImage.fillAmount = (m_timeSword * 1 / m_intervalSword);
+    }
+
+    private void RefreshSpell()
+    {
+        m_spellImage.fillAmount = (m_timeSpell * 1 / m_intervalSpell);
     }
 
 }
