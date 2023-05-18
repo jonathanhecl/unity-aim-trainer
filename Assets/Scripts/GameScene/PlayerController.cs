@@ -125,9 +125,11 @@ public class PlayerController : MonoBehaviour
         {
             return;
         }
+
         if (!GameManager.GetInstance().m_inmortalPlayer) {
             GameManager.GetInstance().HandlePlayerDamage(p_damage);
         }
+
         m_playerCharacter.transform.localPosition = Vector3.zero; 
         m_playerCharacter.GetComponent<Animator>().SetTrigger("Hit");
         if (GameManager.GetInstance().GetPlayerHP() <= 0)
@@ -139,9 +141,10 @@ public class PlayerController : MonoBehaviour
         else
         {
             m_audioSource.PlayOneShot(m_audioHurt);
-            m_playerBlood.SetActive(true);
-            StartCoroutine(WaitForBlood());
         }
+
+        m_playerBlood.SetActive(true);
+        StartCoroutine(WaitForBlood());
     }
 
     private IEnumerator WaitForBlood()

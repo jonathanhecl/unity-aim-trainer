@@ -8,49 +8,49 @@ public class EnemyController : MonoBehaviour
 {
     private GridLogic grid;
     private float m_entropy = 0.0f;
-    //private float m_distanceToMagic;
-    //private float m_paralysis = 0.0f;
 
-    //[SerializeField] private float m_maxHP = 200.0f;
-    [SerializeField] private float m_currentHP = 200.0f;
+    private EnemyData m_enemyData;
 
-    [SerializeField] private GameObject m_enemyControl;
-    [SerializeField] private GameObject m_enemyCharacter;
+    private float m_currentHP;
+
+    public bool m_isMoving;
+
+    private GameObject m_enemyControl;
     [SerializeField] private GameObject m_enemyBlood;
-    [SerializeField] public GameObject m_targetControl;
-    [SerializeField] public bool m_isMoving = false;
-    [SerializeField] private float m_speedMovementDelay = 0.2f;
-    //[SerializeField] private int m_tilesDistanceToMagic = 10;
+    [SerializeField] private GameObject m_enemyCharacter;
 
+    private GameObject m_targetControl;
     private AudioSource m_audioSource;
 
-    [SerializeField] public AudioClip m_audioAttackHit;
-    [SerializeField] public AudioClip m_audioHurt;
-    [SerializeField] public AudioClip m_audioDeath;
-
-    private void Start()
+    public void InitEnemy(EnemyData p_enemyData, GameObject p_target)
     {
+        Debug.Assert(p_enemyData != null, "Enemy data is null");
+
+        m_enemyData = p_enemyData;
+        m_targetControl = p_target;
+
         grid = gameObject.AddComponent<GridLogic>();
-        //m_distanceToMagic = grid.m_tileGridSize * m_tilesDistanceToMagic;
+        m_enemyControl = gameObject;
+        m_enemyBlood.SetActive(false);
+
         m_enemyCharacter.transform.localPosition = Vector3.zero;
         m_audioSource = GetComponent<AudioSource>();
+
+        m_currentHP = m_enemyData.maxHealth;
+
+        m_enemyCharacter.transform.localScale = new Vector3(m_enemyData.size, m_enemyData.size, m_enemyData.size);
+
+        m_isMoving = false;
     }
 
     void Update()
     {
-        if (m_currentHP <= 0)
-        {
+        if (m_targetControl == null || m_currentHP <= 0 || m_isMoving)
+        { 
             return;
         }
 
-        if (m_isMoving)
-        {
-            return;
-        }
-        else
-        {
-           MoveEnemy();
-        }
+        MoveEnemy();
     }
 
     private void OnMouseDown()
@@ -85,17 +85,18 @@ public class EnemyController : MonoBehaviour
         if (m_currentHP <= 0)
         {
             GameManager.GetInstance().AddScore(2);
-            m_audioSource.PlayOneShot(m_audioDeath);
+            m_audioSource.PlayOneShot(m_enemyData.enemyBase.m_audioDeath);
             m_enemyCharacter.GetComponent<Animator>().SetBool("Alive", false);
         }
         else
         {
             GameManager.GetInstance().AddScore(1);
-            m_audioSource.PlayOneShot(m_audioHurt);
-            m_enemyBlood.SetActive(true);
+            m_audioSource.PlayOneShot(m_enemyData.enemyBase.m_audioHurt);
             m_entropy++;
-            StartCoroutine(WaitForBlood());
         }
+
+        m_enemyBlood.SetActive(true);
+        StartCoroutine(WaitForBlood());
     }
 
     private IEnumerator WaitForBlood()
@@ -145,13 +146,13 @@ public class EnemyController : MonoBehaviour
             var l_originalRotation = m_enemyCharacter.transform.rotation;
             var l_nextRotation = Quaternion.LookRotation(l_direction);
 
-            m_enemyCharacter.transform.rotation = Quaternion.Lerp(l_originalRotation, l_nextRotation, m_speedMovementDelay);
+            m_enemyCharacter.transform.rotation = Quaternion.Lerp(l_originalRotation, l_nextRotation, m_enemyData.speedDelay);
         } else
         {
             l_direction = -l_difference.normalized;
 
             m_isMoving = true;
-            StartCoroutine(grid.Movement(m_enemyControl, m_enemyCharacter, l_direction, m_speedMovementDelay));
+            StartCoroutine(grid.Movement(m_enemyControl, m_enemyCharacter, l_direction, m_enemyData.speedDelay));
             return;
         }
 
@@ -159,14 +160,14 @@ public class EnemyController : MonoBehaviour
 
         if (l_target != null)
         {
-            m_audioSource.PlayOneShot(m_audioAttackHit);
-            l_target.HandleHurt(50);
+            m_audioSource.PlayOneShot(m_enemyData.enemyBase.m_audioAttackHit);
+            l_target.HandleHurt(m_enemyData.baseDamage);
         }
 
         l_direction = RandomMovement(-l_direction, l_direction);
 
         m_isMoving = true;
-        StartCoroutine(grid.Movement(m_enemyControl, m_enemyCharacter, l_direction, m_speedMovementDelay));
+        StartCoroutine(grid.Movement(m_enemyControl, m_enemyCharacter, l_direction, m_enemyData.speedDelay));
     }
 
     private Vector3 RandomMovement(Vector3 p_direction, Vector3 p_invalid)
@@ -257,6 +258,6 @@ public class EnemyController : MonoBehaviour
         l_direction = RandomMovement(l_direction, -l_direction);
 
         m_isMoving = true;
-        StartCoroutine(grid.Movement(m_enemyControl, m_enemyCharacter, l_direction, m_speedMovementDelay));
+        StartCoroutine(grid.Movement(m_enemyControl, m_enemyCharacter, l_direction, m_enemyData.speedDelay));
     }
 }

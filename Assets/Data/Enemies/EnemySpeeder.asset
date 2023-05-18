@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd5fd578f79698d4180e93081630d841, type: 3}
+  m_Name: EnemySpeeder
+  m_EditorClassIdentifier: 
+  size: 0.7
+  maxHealth: 150
+  speedDelay: 0.13
+  baseDamage: 30
+  enemyBase: {fileID: 11400000, guid: e0b0a15d582e32f49a2253510a189f7f, type: 2}

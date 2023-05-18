@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 466b35ffcf60c324cbed8eade1daff81, type: 3}
+  m_Name: EnemyBase
+  m_EditorClassIdentifier: 
+  m_enemyControl: {fileID: 175198389748043035, guid: 62120744eb250174f962aa6059c9d282,
+    type: 3}
+  m_enemyCharacter: {fileID: 175198389748043035, guid: 62120744eb250174f962aa6059c9d282,
+    type: 3}
+  m_enemyBlood: {fileID: 3447504583947046697, guid: 03cf28f3260a74c4d869e7d3cd4ce570,
+    type: 3}
+  m_audioAttackHit: {fileID: 8300000, guid: d8dbd03a1f4fd504c80377b6b4bd9d84, type: 3}
+  m_audioHurt: {fileID: 8300000, guid: dd69f509380cef9488a99136d5f029f4, type: 3}
+  m_audioDeath: {fileID: 8300000, guid: a3bb5e0f56a2ea74480ff0ba4febe91a, type: 3}

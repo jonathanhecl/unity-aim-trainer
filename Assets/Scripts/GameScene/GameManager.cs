@@ -17,6 +17,10 @@ public class GameManager : MonoBehaviour
 {
     [SerializeField] private PlayerController m_playerControl;
     [SerializeField] private GameObject m_enemyPrefab;
+    [SerializeField] private EnemyData m_enemyDataNormal;
+    [SerializeField] private EnemyData m_enemyDataSpeeder;
+
+
     [SerializeField] private Transform[] m_respawnPosition = new Transform[4];
 
     [SerializeField] private List<GameObject> m_enemies = new List<GameObject>();
@@ -178,7 +182,16 @@ public class GameManager : MonoBehaviour
         m_enemies.Add(newEnemy);
 
         EnemyController enemyController = newEnemy.GetComponent<EnemyController>();
-        enemyController.m_targetControl = m_playerControl.gameObject;
+
+        var l_random = Random.Range(0, 2);
+        if (l_random <= 0.9)
+        {
+            enemyController.InitEnemy(m_enemyDataSpeeder, m_playerControl.gameObject);
+        }
+        else
+        {
+            enemyController.InitEnemy(m_enemyDataNormal, m_playerControl.gameObject);
+        }
     }
 
     public void HandleGameOver()

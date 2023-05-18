@@ -3055,6 +3055,8 @@ MonoBehaviour:
   m_playerControl: {fileID: 193544071}
   m_enemyPrefab: {fileID: 175198389748043035, guid: 62120744eb250174f962aa6059c9d282,
     type: 3}
+  m_enemyDataNormal: {fileID: 11400000, guid: 5535574d93d68ed4b82bb91a92e52dbe, type: 2}
+  m_enemyDataSpeeder: {fileID: 11400000, guid: 3b36acb3670868a419cfae743d450e7d, type: 2}
   m_respawnPosition:
   - {fileID: 487584375}
   - {fileID: 999272850}
