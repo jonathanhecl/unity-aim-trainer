@@ -4,16 +4,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using static UnityEditor.Searcher.SearcherWindow.Alignment;
 
-public class EnemyController : MonoBehaviour
+public class EnemyController : EnemyEntity
 {
     private GridLogic grid;
-    private float m_entropy = 0.0f;
 
     private EnemyData m_enemyData;
-
-    private float m_currentHP;
-
-    public bool m_isMoving;
 
     private GameObject m_enemyControl;
     [SerializeField] private GameObject m_enemyBlood;
@@ -36,7 +31,8 @@ public class EnemyController : MonoBehaviour
         m_enemyCharacter.transform.localPosition = Vector3.zero;
         m_audioSource = GetComponent<AudioSource>();
 
-        m_currentHP = m_enemyData.maxHealth;
+        m_maxHP = m_enemyData.maxHealth;
+        m_currentHP = m_maxHP;
 
         m_enemyCharacter.transform.localScale = new Vector3(m_enemyData.size, m_enemyData.size, m_enemyData.size);
 
@@ -87,6 +83,8 @@ public class EnemyController : MonoBehaviour
             GameManager.GetInstance().AddScore(2);
             m_audioSource.PlayOneShot(m_enemyData.enemyBase.m_audioDeath);
             m_enemyCharacter.GetComponent<Animator>().SetBool("Alive", false);
+            // Create a new enemy
+            GameManager.GetInstance().CreateEnemy();
         }
         else
         {
@@ -168,48 +166,6 @@ public class EnemyController : MonoBehaviour
 
         m_isMoving = true;
         StartCoroutine(grid.Movement(m_enemyControl, m_enemyCharacter, l_direction, m_enemyData.speedDelay));
-    }
-
-    private Vector3 RandomMovement(Vector3 p_direction, Vector3 p_invalid)
-    {
-        var result = new Vector3();
-        var num = UnityEngine.Random.Range(0.0f, 5.0f);
-
-        if (num <= 3.5f && m_entropy == 0.0f)
-        {
-            result = p_direction;
-        } else
-        {
-            num = UnityEngine.Random.Range(0.0f, 4.0f);
-
-            switch (num)
-            {
-                case (> 3.0f):
-                    result = transform.right;
-                    break;
-                case (> 2.0f):
-                    result = transform.forward;
-                    break;
-                case (> 1.0f):
-                    result = -transform.right;
-                    break;
-                default:
-                    result = -transform.forward;
-                    break;
-            }
-        }
-
-        if (result == p_invalid)
-        {
-            result = p_direction;
-        }
-
-        if (m_entropy > 0.0f)
-        {
-            m_entropy--;
-        }
-       
-        return result;
     }
 
     private void MoveEnemy()
