@@ -1,7 +1,8 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public struct SpellInfo
@@ -15,11 +16,15 @@ public struct SpellInfo
 
 public class GameManager : MonoBehaviour
 {
+    public UnityEvent<string> OnEnemyRespawn;
+    public UnityEvent<string> OnPlayerMove;
+    public UnityEvent<string> OnPlayerAttack;
+    public UnityEvent<string> OnPlayerDie;
+
     [SerializeField] private PlayerController m_playerControl;
     [SerializeField] private GameObject m_enemyPrefab;
     [SerializeField] private EnemyData m_enemyDataNormal;
     [SerializeField] private EnemyData m_enemyDataSpeeder;
-
 
     [SerializeField] private Transform[] m_respawnPosition = new Transform[4];
 
@@ -64,6 +69,10 @@ public class GameManager : MonoBehaviour
         if (m_instance == null)
         {
             m_instance = this;
+            OnEnemyRespawn.AddListener(OnEnemyRespawnHandler);
+            OnPlayerMove.AddListener(OnPlayerMoveHandler);
+            OnPlayerAttack.AddListener(OnPlayerAttackHandler);
+            OnPlayerDie.AddListener(OnPlayerDieHandler);
         } else
         {
             Destroy(gameObject);
@@ -154,6 +163,11 @@ public class GameManager : MonoBehaviour
     {
         var l_prevSpell = m_spellLoaded;
 
+        if (m_spellLoaded == SpellLoaded.None)
+        {
+            return l_prevSpell;
+        }
+
         switch (m_spellLoaded)
         {
             case SpellLoaded.Attack:
@@ -168,6 +182,7 @@ public class GameManager : MonoBehaviour
                 break;
         }
 
+        OnPlayerAttack?.Invoke(name);
         m_spellLoaded = SpellLoaded.None;
 
         return l_prevSpell;
@@ -175,15 +190,16 @@ public class GameManager : MonoBehaviour
 
     public void CreateEnemy()
     {
-        var l_respawnPosition = m_respawnPosition[Random.Range(0, m_respawnPosition.Length)];
+        var l_respawnPosition = m_respawnPosition[UnityEngine.Random.Range(0, m_respawnPosition.Length)];
 
         var newEnemy = Instantiate(m_enemyPrefab, l_respawnPosition.position, Quaternion.identity);
 
+        OnEnemyRespawn?.Invoke(name);
         m_enemies.Add(newEnemy);
 
         EnemyController enemyController = newEnemy.GetComponent<EnemyController>();
 
-        var l_random = Random.Range(0, 2);
+        var l_random = UnityEngine.Random.Range(0, 2);
         if (l_random <= 0.9)
         {
             enemyController.InitEnemy(m_enemyDataSpeeder, m_playerControl.gameObject);
@@ -288,4 +304,25 @@ public class GameManager : MonoBehaviour
         m_spellImage.fillAmount = (m_timeSpell * 1 / m_intervalSpell);
     }
 
+    // Events
+
+    private void OnEnemyRespawnHandler(string p_origin)
+    {
+        Debug.Log($"EnemyRespawn event. Called by {p_origin}. Executed in {name}");
+    }
+
+    private void OnPlayerMoveHandler(string p_origin)
+    {
+        Debug.Log($"PlayerMove event. Called by {p_origin}. Executed in {name}");
+    }
+
+    private void OnPlayerAttackHandler(string p_origin)
+    {
+        Debug.Log($"PlayerAttack event. Called by {p_origin}. Executed in {name}");
+    }
+
+    private void OnPlayerDieHandler(string p_origin)
+    {
+        Debug.Log($"PlayerDie event. Called by {p_origin}. Executed in {name}");
+    }
 }

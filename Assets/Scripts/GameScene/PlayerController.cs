@@ -1,8 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting.Dependencies.NCalc;
 using UnityEngine;
-using UnityEngine.UIElements;
+using UnityEngine.Events;
 
 public class PlayerController : MonoBehaviour
 {
@@ -136,6 +136,7 @@ public class PlayerController : MonoBehaviour
         {
             m_audioSource.PlayOneShot(m_audioDeath);
             m_playerCharacter.GetComponent<Animator>().SetBool("Alive", false);
+            GameManager.GetInstance().OnPlayerDie?.Invoke(name);
             GameManager.GetInstance().HandleGameOver();
         }
         else
@@ -161,6 +162,8 @@ public class PlayerController : MonoBehaviour
             if (!GameManager.GetInstance().UseSword()) {
                 return;
             }
+
+            GameManager.GetInstance().OnPlayerAttack?.Invoke(name);
 
             m_playerCharacter.GetComponent<Animator>().SetTrigger("PhysicalAttack");
 
@@ -210,6 +213,8 @@ public class PlayerController : MonoBehaviour
 
             return;
         }
+
+        GameManager.GetInstance().OnPlayerMove?.Invoke(name);
 
         m_playerCharacter.GetComponent<Animator>().SetBool("Running",true);
         m_direction = l_direction;

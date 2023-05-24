@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEditor.Searcher.SearcherWindow.Alignment;
+using UnityEngine.Events;
 
 public class EnemyController : EnemyEntity
 {
@@ -83,6 +83,7 @@ public class EnemyController : EnemyEntity
             GameManager.GetInstance().AddScore(2);
             m_audioSource.PlayOneShot(m_enemyData.enemyBase.m_audioDeath);
             m_enemyCharacter.GetComponent<Animator>().SetBool("Alive", false);
+            OnEnemyDie?.Invoke(name);
             // Create a new enemy
             GameManager.GetInstance().CreateEnemy();
         }
@@ -109,6 +110,8 @@ public class EnemyController : EnemyEntity
         {
             return;
         }
+
+        OnEnemyAttack?.Invoke(name);
 
         Vector3 l_difference = m_enemyControl.transform.localPosition - m_targetControl.transform.localPosition;
         Vector3 l_direction = Vector3.zero;
@@ -210,6 +213,8 @@ public class EnemyController : EnemyEntity
                 l_direction = -transform.forward;
             }
         }
+
+        OnEnemyMove?.Invoke(name);
 
         l_direction = RandomMovement(l_direction, -l_direction);
 
