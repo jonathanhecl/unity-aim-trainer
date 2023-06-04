@@ -22,9 +22,9 @@ public class WallController : MonoBehaviour
             {
                 return;
             }
-            var l_material = GetComponent<Renderer>().material;
-            l_material.color = Color.red;
-            l_material.EnableKeyword("_EMISSION");
+            //var l_material = GetComponent<Renderer>().material;
+            //l_material.color = Color.red;
+            //l_material.EnableKeyword("_EMISSION");
             m_isPlayerNear = true; ;
         } else
         {
@@ -32,9 +32,9 @@ public class WallController : MonoBehaviour
             {
                 return;
             }
-            var l_material = GetComponent<Renderer>().material;
-            l_material.color = Color.black;
-            l_material.DisableKeyword("_EMISSION");
+            // var l_material = GetComponent<Renderer>().material;
+            //l_material.color = Color.black;
+            //l_material.DisableKeyword("_EMISSION");
             m_isPlayerNear = false;
         }
     }

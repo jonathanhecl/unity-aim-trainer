@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
 
 public struct SpellInfo
@@ -20,6 +22,10 @@ public class GameManager : MonoBehaviour
     public UnityEvent<string> OnPlayerMove;
     public UnityEvent<string> OnPlayerAttack;
     public UnityEvent<string> OnPlayerDie;
+
+    [SerializeField] private Volume m_volumeGlobal;
+    [SerializeField] private VolumeProfile m_volumePostProcess;
+    [SerializeField] private VolumeProfile m_volumeDamage;
 
     [SerializeField] private PlayerController m_playerControl;
     [SerializeField] private GameObject m_enemyPrefab;
@@ -87,6 +93,7 @@ public class GameManager : MonoBehaviour
         m_timePotion = m_intervalPotion;
         m_timeSword = m_intervalSword;
         m_timeSpell = m_intervalSpell;
+        m_volumeGlobal.profile = m_volumePostProcess;
 
         ResetScore();
         ResetPlayerHP();
@@ -266,6 +273,31 @@ public class GameManager : MonoBehaviour
     private void RefreshPlayerHP()
     {
         m_playerHPSlider.value = (m_playerHP * 1 / m_maxHP);
+        if (m_playerHP < m_maxHP)
+        {
+            if (m_volumeGlobal.profile != m_volumeDamage)
+            {
+                m_volumeGlobal.profile = m_volumeDamage;
+            }
+            m_volumeDamage.TryGet(out Vignette _vignette);
+            m_volumeDamage.TryGet(out ColorCurves _colorcurves);
+            _vignette.intensity.value = 1 - (m_playerHP * 1 / m_maxHP);
+            if (m_playerHP < m_maxHP / 2)
+            {
+                _colorcurves.active = true;
+            } else
+            {
+                _colorcurves.active = false;
+            }
+
+        }
+        else
+        {
+            if (m_volumeGlobal.profile != m_volumePostProcess)
+            {
+                m_volumeGlobal.profile = m_volumePostProcess;
+            }
+        }
     }
 
     public bool UsePotion()
