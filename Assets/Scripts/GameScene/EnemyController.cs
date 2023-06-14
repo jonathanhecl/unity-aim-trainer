@@ -8,10 +8,11 @@ public class EnemyController : EnemyEntity
 {
     private GridLogic grid;
 
+    [SerializeField] private GameObject m_enemyBloodEffect;
+
     private EnemyData m_enemyData;
 
     private GameObject m_enemyControl;
-    [SerializeField] private GameObject m_enemyBlood;
     [SerializeField] private GameObject m_enemyCharacter;
 
     private GameObject m_targetControl;
@@ -98,7 +99,7 @@ public class EnemyController : EnemyEntity
 
     private void CreateBlood()
     {
-        var l_blood = Instantiate(m_enemyBlood);
+        var l_blood = Instantiate(m_enemyBloodEffect);
         l_blood.transform.position = (m_enemyCharacter.transform.position + Vector3.up * 3f);
     }
 

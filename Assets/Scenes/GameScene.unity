@@ -636,7 +636,9 @@ MonoBehaviour:
   m_playerControl: {fileID: 193544070}
   m_playerCharacter: {fileID: 875463674}
   m_playerDamageArea: {fileID: 729713300}
-  m_playerBlood: {fileID: 6592551242215424828, guid: 03cf28f3260a74c4d869e7d3cd4ce570,
+  m_playerBloodEffect: {fileID: 6592551242215424828, guid: 03cf28f3260a74c4d869e7d3cd4ce570,
+    type: 3}
+  m_playerHealthEffect: {fileID: 8421069766860961682, guid: 7418cfa6ef67cc842a519af40d7833de,
     type: 3}
   m_isMoving: 0
   m_audioSource: {fileID: 0}

@@ -13,7 +13,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] public GameObject m_playerCharacter;
     [SerializeField] private GameObject m_playerDamageArea;
 
-    [SerializeField] private GameObject m_playerBlood;
+    [SerializeField] private GameObject m_playerBloodEffect;
+    [SerializeField] private GameObject m_playerHealthEffect;
+
     [SerializeField] public bool m_isMoving = false;
 
     public AudioSource m_audioSource;
@@ -116,8 +118,16 @@ public class PlayerController : MonoBehaviour
                 m_audioSource.PlayOneShot(m_audioCure);
 
                 GameManager.GetInstance().HandlePlayerDamage(-50);
+
+                CreateHealth();
             }
         }
+    }
+
+    private void CreateHealth()
+    {
+        var l_health = Instantiate(m_playerHealthEffect);
+        l_health.transform.position = m_playerCharacter.transform.position + Vector3.up * 3;
     }
 
     public void HandleHurt(float p_damage)
@@ -150,7 +160,7 @@ public class PlayerController : MonoBehaviour
 
     private void CreateBlood()
     {
-        var l_blood = Instantiate(m_playerBlood);
+        var l_blood = Instantiate(m_playerBloodEffect);
         l_blood.transform.position = m_playerCharacter.transform.position + Vector3.up * 3;
     }
 
