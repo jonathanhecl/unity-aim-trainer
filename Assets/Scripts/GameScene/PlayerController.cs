@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private GameObject m_playerControl;
     [SerializeField] public GameObject m_playerCharacter;
     [SerializeField] private GameObject m_playerDamageArea;
+
     [SerializeField] private GameObject m_playerBlood;
     [SerializeField] public bool m_isMoving = false;
 
@@ -144,14 +145,13 @@ public class PlayerController : MonoBehaviour
             m_audioSource.PlayOneShot(m_audioHurt);
         }
 
-        m_playerBlood.SetActive(true);
-        StartCoroutine(WaitForBlood());
+        CreateBlood();
     }
 
-    private IEnumerator WaitForBlood()
+    private void CreateBlood()
     {
-        yield return new WaitForSeconds(0.3f);
-        m_playerBlood.SetActive(false);
+        var l_blood = Instantiate(m_playerBlood);
+        l_blood.transform.position = m_playerCharacter.transform.position + Vector3.up * 3;
     }
 
     private void HandleAttack()

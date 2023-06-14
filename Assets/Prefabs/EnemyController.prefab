@@ -32,7 +32,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 424701195711317787}
-  - {fileID: 1067272247406681386}
+  - {fileID: 8819520583238717748}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -48,18 +48,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b26c042d11de5ec40a2085540dc63ea9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_maxHP: 200
-  m_currentHP: 200
-  m_enemyControl: {fileID: 175198389748043035}
-  m_enemyCharacter: {fileID: 1058073028878851489}
-  m_enemyBlood: {fileID: 1067272247406681382}
-  m_targetControl: {fileID: 0}
+  OnEnemyMove:
+    m_PersistentCalls:
+      m_Calls: []
+  OnEnemyAttack:
+    m_PersistentCalls:
+      m_Calls: []
+  OnEnemyDie:
+    m_PersistentCalls:
+      m_Calls: []
   m_isMoving: 0
-  m_speedMovementDelay: 0.2
-  m_tilesDistanceToMagic: 10
-  m_audioAttackHit: {fileID: 8300000, guid: d8dbd03a1f4fd504c80377b6b4bd9d84, type: 3}
-  m_audioHurt: {fileID: 8300000, guid: dd69f509380cef9488a99136d5f029f4, type: 3}
-  m_audioDeath: {fileID: 8300000, guid: a3bb5e0f56a2ea74480ff0ba4febe91a, type: 3}
+  m_enemyBlood: {fileID: 6592551242215424828, guid: 03cf28f3260a74c4d869e7d3cd4ce570,
+    type: 3}
+  m_enemyCharacter: {fileID: 1058073028878851489}
 --- !u!136 &175198389748043030
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -848,17 +849,16 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6592551242215424827, guid: 03cf28f3260a74c4d869e7d3cd4ce570,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 03cf28f3260a74c4d869e7d3cd4ce570, type: 3}
---- !u!1 &1067272247406681382 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3447504583947046697, guid: 03cf28f3260a74c4d869e7d3cd4ce570,
-    type: 3}
-  m_PrefabInstance: {fileID: 2384736623909605903}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &1067272247406681386 stripped
+--- !u!4 &8819520583238717748 stripped
 Transform:
-  m_CorrespondingSourceObject: {fileID: 3447504583947046693, guid: 03cf28f3260a74c4d869e7d3cd4ce570,
+  m_CorrespondingSourceObject: {fileID: 6592551242215424827, guid: 03cf28f3260a74c4d869e7d3cd4ce570,
     type: 3}
   m_PrefabInstance: {fileID: 2384736623909605903}
   m_PrefabAsset: {fileID: 0}

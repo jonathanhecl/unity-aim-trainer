@@ -3,7 +3,10 @@ guid: b26c042d11de5ec40a2085540dc63ea9
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - m_enemyBlood: {fileID: 6592551242215424828, guid: 03cf28f3260a74c4d869e7d3cd4ce570,
+      type: 3}
+  - m_enemyCharacter: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

@@ -26,7 +26,6 @@ public class EnemyController : EnemyEntity
 
         grid = gameObject.AddComponent<GridLogic>();
         m_enemyControl = gameObject;
-        m_enemyBlood.SetActive(false);
 
         m_enemyCharacter.transform.localPosition = Vector3.zero;
         m_audioSource = GetComponent<AudioSource>();
@@ -94,14 +93,13 @@ public class EnemyController : EnemyEntity
             m_entropy++;
         }
 
-        m_enemyBlood.SetActive(true);
-        StartCoroutine(WaitForBlood());
+        CreateBlood();
     }
 
-    private IEnumerator WaitForBlood()
+    private void CreateBlood()
     {
-        yield return new WaitForSeconds(0.3f);
-        m_enemyBlood.SetActive(false);
+        var l_blood = Instantiate(m_enemyBlood);
+        l_blood.transform.position = (m_enemyCharacter.transform.position + Vector3.up * 3f);
     }
 
     private void AttackTarget()
