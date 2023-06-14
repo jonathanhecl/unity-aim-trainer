@@ -63,26 +63,21 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void OnDrawGizmosSelected()
-    {
-        if (m_playerControl == null || m_direction == Vector3.zero)
-        {
-            return;
-        }
-        Gizmos.color = Color.red;
-        Gizmos.DrawLine(m_playerControl.transform.position + m_fixUp, 
-            m_playerControl.transform.position + m_fixUp + m_direction * (grid.m_tileGridSize*1.7f));
-        Gizmos.DrawWireSphere(m_playerControl.transform.position + m_fixUp, 5.0f);
-    }
-
     private EnemyController IsEnemyInFront()
     {
-        if (m_playerDamageArea.GetComponent<DamageAreaController>().m_enemyController != null)
+        RaycastHit hit;
+        if (Physics.Raycast(m_playerDamageArea.transform.position + m_fixUp, m_direction , out hit, 12))
         {
-            return m_playerDamageArea.GetComponent<DamageAreaController>().m_enemyController;
+            if (hit.collider.gameObject.tag == "Enemy")
+            {
+                var enemy = hit.collider.gameObject.GetComponent<EnemyController>();
+                if (enemy.IsAlive()) {
+                    return enemy;
+                }
+            }
         }
-
-        return null;             
+  
+        return null;
     }
 
     private void HandleRevive()
@@ -166,6 +161,8 @@ public class PlayerController : MonoBehaviour
 
     private void HandleAttack()
     {
+        Debug.DrawRay(m_playerDamageArea.transform.position + m_fixUp, m_direction *12 , Color.red, 0.3f);
+
         if (Input.GetKeyDown(KeyCode.LeftControl) ||
             Input.GetKeyDown(KeyCode.RightControl) )
         {
@@ -217,7 +214,8 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
-        if (!grid.PlayerCanMove(m_playerControl, l_direction))  // Can't move only rotate
+        if (!grid.PlayerCanMove(m_playerControl, l_direction) || 
+            IsEnemyInFront() != null)  // Can't move only rotate
         {
             m_playerCharacter.transform.rotation = Quaternion.LookRotation(l_direction);
 
@@ -232,4 +230,5 @@ public class PlayerController : MonoBehaviour
         m_isMoving = true;
         StartCoroutine(grid.Movement(m_playerControl, m_playerCharacter, l_direction, 0.0f));
     }
+
 }

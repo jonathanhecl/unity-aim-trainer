@@ -68,6 +68,10 @@ public class EnemyController : EnemyEntity
         }
     }
 
+    public bool IsAlive()  {
+        return m_currentHP > 0;
+    }
+
     public void HandleHurt(float p_damage)
     {
         if (m_currentHP <= 0)
