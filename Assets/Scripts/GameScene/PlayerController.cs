@@ -66,7 +66,7 @@ public class PlayerController : MonoBehaviour
     private EnemyController IsEnemyInFront()
     {
         RaycastHit hit;
-        if (Physics.Raycast(m_playerDamageArea.transform.position + m_fixUp, m_direction , out hit, 12))
+        if (Physics.Raycast((m_playerDamageArea.transform.position + m_fixUp), m_direction , out hit, 12))
         {
             if (hit.collider.gameObject.tag == "Enemy")
             {
@@ -226,8 +226,8 @@ public class PlayerController : MonoBehaviour
 
         m_playerCharacter.GetComponent<Animator>().SetBool("Running",true);
         m_direction = l_direction;
-        m_playerDamageArea.transform.position = m_playerCharacter.transform.position + l_direction * (grid.m_tileGridSize);
         m_isMoving = true;
+        m_playerDamageArea.transform.position = m_playerCharacter.transform.position + l_direction;
         StartCoroutine(grid.Movement(m_playerControl, m_playerCharacter, l_direction, 0.0f));
     }
 

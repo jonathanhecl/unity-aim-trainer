@@ -46,7 +46,7 @@ public class GameManager : MonoBehaviour
 
     //[SerializeField] private GameObject m_spellsContent;
     //[SerializeField] private GameObject m_spellPrefab;
-    [SerializeField] public List<SpellInfo> m_spellsList = new List<SpellInfo>();
+    public List<SpellInfo> m_spellsList = new List<SpellInfo>();
     [SerializeField] private Image m_spellImage;
     [SerializeField] private float m_intervalSpell = 1.0f;
 
