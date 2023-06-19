@@ -12,7 +12,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float m_maxHP = 200.0f;
     private float m_playerHP = 0;
 
-    public List<SpellInfo> m_spellsList = new List<SpellInfo>();
     private SpellLoaded m_spellLoaded = 0;
 
     private Vector3 m_direction = Vector3.zero;
@@ -45,6 +44,11 @@ public class PlayerController : MonoBehaviour
         m_audioSource = GetComponent<AudioSource>();
         m_direction = Vector3.zero;
         m_fixUp = (transform.up * 4);
+    }
+
+    private void Awake()
+    {
+        m_playerHP = m_maxHP;
     }
 
     void Update()
