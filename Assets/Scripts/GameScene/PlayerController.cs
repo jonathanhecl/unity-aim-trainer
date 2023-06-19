@@ -7,6 +7,14 @@ using UnityEngine.Events;
 public class PlayerController : MonoBehaviour
 {
     private GridLogic grid;
+
+    public bool m_inmortalPlayer = false;
+    [SerializeField] private float m_maxHP = 200.0f;
+    private float m_playerHP = 0;
+
+    public List<SpellInfo> m_spellsList = new List<SpellInfo>();
+    private SpellLoaded m_spellLoaded = 0;
+
     private Vector3 m_direction = Vector3.zero;
 
     [SerializeField] private GameObject m_playerControl;
@@ -46,7 +54,7 @@ public class PlayerController : MonoBehaviour
             GameManager.GetInstance().CreateEnemy();
         }
 
-        if (GameManager.GetInstance().GetPlayerHP() <= 0)
+        if (m_playerHP <= 0)
         {
             HandleRevive();
             return;
@@ -61,6 +69,17 @@ public class PlayerController : MonoBehaviour
         {
             HandleMovement();
         }
+    }
+
+    public bool IsAlive()
+    {
+        return m_playerHP > 0;
+    }
+
+    private void CreateBlood()
+    {
+        var l_blood = Instantiate(m_playerBloodEffect);
+        l_blood.transform.position = m_playerCharacter.transform.position + Vector3.up * 3;
     }
 
     private EnemyController IsEnemyInFront()
@@ -84,8 +103,9 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.R))
         {
+            m_playerHP = m_maxHP;
             m_audioSource.PlayOneShot(m_audioRevive);
-            GameManager.GetInstance().ResetPlayerHP();
+            GameManager.GetInstance().ResetPlayerHP(m_maxHP);
             m_playerCharacter.GetComponent<Animator>().SetBool("Alive", true);
             GameManager.GetInstance().ResetScore();
         }
@@ -100,8 +120,48 @@ public class PlayerController : MonoBehaviour
             {
                 return;
             }
-            GameManager.GetInstance().SetSpell(GameManager.SpellLoaded.Attack);
+            SetSpell(SpellLoaded.Attack);
         }
+    }
+
+    public void SetSpell(SpellLoaded spellType)
+    {
+        if (!GameManager.GetInstance().LoadSpell())
+        {
+            return;
+        }
+
+        m_spellLoaded = spellType;
+        Debug.Log("Spell " + spellType.ToString() + " loaded");
+    }
+
+    public SpellLoaded UseSpell()
+    {
+        var l_prevSpell = m_spellLoaded;
+
+        if (m_spellLoaded == SpellLoaded.None)
+        {
+            return l_prevSpell;
+        }
+
+        switch (m_spellLoaded)
+        {
+            case SpellLoaded.Attack:
+                m_playerCharacter.GetComponent<Animator>().SetTrigger("MagicAttack");
+                m_audioSource.PlayOneShot(m_audioSpellAttack);
+                break;
+            case SpellLoaded.Cure:
+                //m_playerControl.m_audioSource.PlayOneShot(m_playerControl.m_audioSpellCure);
+                break;
+            case SpellLoaded.Paralysis:
+                //m_playerControl.m_audioSource.PlayOneShot(m_playerControl.m_audioSpellParalysis);
+                break;
+        }
+
+        //OnPlayerAttack?.Invoke(name);
+        m_spellLoaded = SpellLoaded.None;
+
+        return l_prevSpell;
     }
 
     private void HandleCure()
@@ -111,10 +171,7 @@ public class PlayerController : MonoBehaviour
             if (GameManager.GetInstance().UsePotion())
             {
                 m_audioSource.PlayOneShot(m_audioCure);
-
-                GameManager.GetInstance().HandlePlayerDamage(-50);
-
-                CreateHealth();
+                HandleHealth(50);
             }
         }
     }
@@ -125,38 +182,50 @@ public class PlayerController : MonoBehaviour
         l_health.transform.position = m_playerCharacter.transform.position + Vector3.up * 3;
     }
 
+    public void HandleHealth(float p_heal)
+    {
+        m_playerHP += p_heal;
+        if (m_playerHP > m_maxHP)
+        {
+            m_playerHP = m_maxHP;
+        }
+
+        GameManager.GetInstance().RefreshPlayerHP(m_playerHP, m_maxHP);
+        CreateHealth();
+    }
+
     public void HandleHurt(float p_damage)
     {
-        if (GameManager.GetInstance().GetPlayerHP() <= 0)
+        if (m_playerHP <= 0)
         {
             return;
         }
 
-        if (!GameManager.GetInstance().m_inmortalPlayer) {
-            GameManager.GetInstance().HandlePlayerDamage(p_damage);
+        if (!m_inmortalPlayer)
+        {
+            m_playerHP -= p_damage;
         }
 
         m_playerCharacter.transform.localPosition = Vector3.zero; 
         m_playerCharacter.GetComponent<Animator>().SetTrigger("Hit");
-        if (GameManager.GetInstance().GetPlayerHP() <= 0)
+        if (m_playerHP <= 0)
         {
             m_audioSource.PlayOneShot(m_audioDeath);
             m_playerCharacter.GetComponent<Animator>().SetBool("Alive", false);
             GameManager.GetInstance().OnPlayerDie?.Invoke(name);
-            GameManager.GetInstance().HandleGameOver();
         }
         else
         {
             m_audioSource.PlayOneShot(m_audioHurt);
         }
 
-        CreateBlood();
-    }
+        if (m_playerHP < 0)
+        {
+            m_playerHP = 0;
+        }
 
-    private void CreateBlood()
-    {
-        var l_blood = Instantiate(m_playerBloodEffect);
-        l_blood.transform.position = m_playerCharacter.transform.position + Vector3.up * 3;
+        GameManager.GetInstance().RefreshPlayerHP(m_playerHP, m_maxHP);
+        CreateBlood();
     }
 
     private void HandleAttack()

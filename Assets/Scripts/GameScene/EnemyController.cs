@@ -58,10 +58,10 @@ public class EnemyController : EnemyEntity
 
         if (Input.GetMouseButtonDown(0))
         {
-            var l_spell = GameManager.GetInstance().UseSpell();
-            if (l_spell == GameManager.SpellLoaded.Attack)
+            var playerControl = GameManager.GetInstance().GetPlayerControl();
+            var l_spell = playerControl.UseSpell();
+            if (l_spell == SpellLoaded.Attack)
             {
-                GameManager.GetInstance().SetSpell(GameManager.SpellLoaded.None);
                 m_entropy++; // More entropy with spell attack
                 HandleHurt(50.0f);
             }
@@ -109,7 +109,7 @@ public class EnemyController : EnemyEntity
 
     private void AttackTarget()
     {
-        if (GameManager.GetInstance().GetPlayerHP() <= 0)
+        if (!GameManager.GetInstance().IsPlayerAlive())
         {
             return;
         }

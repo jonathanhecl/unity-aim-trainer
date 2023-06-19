@@ -8,7 +8,9 @@ public class FloorController : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            if (GameManager.GetInstance().UseSpell() != GameManager.SpellLoaded.None)
+            var playerControl = GameManager.GetInstance().GetPlayerControl();
+            var l_spell = playerControl.UseSpell();
+            if (l_spell != SpellLoaded.None)
             {
                 Debug.Log("Spell missed");
             }
