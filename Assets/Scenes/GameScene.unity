@@ -389,8 +389,8 @@ RectTransform:
   m_GameObject: {fileID: 36131886}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.8, y: 0.8, z: 0.8}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 1785135296}
   - {fileID: 811862889}
@@ -633,6 +633,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f088bd78c8469e7498f2a82d00b3cf19, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_inmortalPlayer: 0
+  m_maxHP: 200
   m_playerControl: {fileID: 193544070}
   m_playerCharacter: {fileID: 875463674}
   m_playerDamageArea: {fileID: 729713300}
@@ -649,6 +651,15 @@ MonoBehaviour:
   m_audioDeath: {fileID: 8300000, guid: a1214e3386921ad439ccae39349254d1, type: 3}
   m_audioRevive: {fileID: 8300000, guid: 52a53be15f7bd8a45bed9b672e75a800, type: 3}
   m_audioSpellAttack: {fileID: 8300000, guid: 28ae111d51a67eb43801e5b34e7fba6c, type: 3}
+  OnPlayerMove:
+    m_PersistentCalls:
+      m_Calls: []
+  OnPlayerAttack:
+    m_PersistentCalls:
+      m_Calls: []
+  OnPlayerDie:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!4 &193544072
 Transform:
   m_ObjectHideFlags: 0
@@ -1570,12 +1581,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 800, y: 600}
   m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0
+  m_MatchWidthOrHeight: 1
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
@@ -2754,8 +2765,8 @@ RectTransform:
   m_GameObject: {fileID: 899366608}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.8, y: 0.8, z: 0.8}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 389777212}
   - {fileID: 923980504}
@@ -3352,22 +3363,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bedbb6ca77e557344b08c17361acac30, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OnEnemyRespawn:
-    m_PersistentCalls:
-      m_Calls: []
-  OnPlayerMove:
-    m_PersistentCalls:
-      m_Calls: []
-  OnPlayerAttack:
-    m_PersistentCalls:
-      m_Calls: []
-  OnPlayerDie:
-    m_PersistentCalls:
-      m_Calls: []
-  m_volumeGlobal: {fileID: 832575518}
-  m_volumePostProcess: {fileID: 11400000, guid: 4850e4e943102a149b61207bd58b6fda,
-    type: 2}
-  m_volumeDamage: {fileID: 11400000, guid: cf0cd0d6557433a4fa2db335913b3fae, type: 2}
   m_playerControl: {fileID: 193544071}
   m_enemyPrefab: {fileID: 175198389748043035, guid: 62120744eb250174f962aa6059c9d282,
     type: 3}
@@ -3379,6 +3374,10 @@ MonoBehaviour:
   - {fileID: 853296261}
   - {fileID: 2060644880}
   m_enemies: []
+  m_volumeGlobal: {fileID: 832575518}
+  m_volumePostProcess: {fileID: 11400000, guid: 4850e4e943102a149b61207bd58b6fda,
+    type: 2}
+  m_volumeDamage: {fileID: 11400000, guid: cf0cd0d6557433a4fa2db335913b3fae, type: 2}
   m_scoreText: {fileID: 1162235647}
   m_playerHPSlider: {fileID: 1708611511}
   m_potionImage: {fileID: 923980505}
@@ -3387,8 +3386,9 @@ MonoBehaviour:
   m_intervalSword: 1
   m_spellImage: {fileID: 911179574}
   m_intervalSpell: 1
-  m_maxHP: 200
-  m_inmortalPlayer: 0
+  OnEnemyRespawn:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!4 &1068915521
 Transform:
   m_ObjectHideFlags: 0
@@ -3566,8 +3566,8 @@ RectTransform:
   m_GameObject: {fileID: 1162235645}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.8, y: 0.8, z: 0.8}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 434140388}
   m_RootOrder: 0
@@ -4886,8 +4886,8 @@ RectTransform:
   m_GameObject: {fileID: 1708611509}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.32, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 1.2, y: 0.90909094, z: 0.90909094}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 313679703}
   - {fileID: 981895295}
@@ -4898,7 +4898,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 52, y: 0}
+  m_AnchoredPosition: {x: 52, y: 12.6}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &1708611511
@@ -5559,8 +5559,8 @@ RectTransform:
   m_GameObject: {fileID: 1934225834}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.79999995, y: 0.79999995, z: 0.79999995}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 1584884333}
   - {fileID: 911179573}
@@ -5570,7 +5570,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -61, y: 0}
+  m_AnchoredPosition: {x: -60.655, y: -4.8256}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1935416696
