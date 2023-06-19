@@ -52,9 +52,6 @@ public class GameManager : MonoBehaviour
     // events
 
     public UnityEvent<string> OnEnemyRespawn;
-    public UnityEvent<string> OnPlayerMove;
-    public UnityEvent<string> OnPlayerAttack;
-    public UnityEvent<string> OnPlayerDie;
 
     private static GameManager m_instance;
 
@@ -64,9 +61,6 @@ public class GameManager : MonoBehaviour
         {
             m_instance = this;
             OnEnemyRespawn.AddListener(OnEnemyRespawnHandler);
-            OnPlayerMove.AddListener(OnPlayerMoveHandler);
-            OnPlayerAttack.AddListener(OnPlayerAttackHandler);
-            OnPlayerDie.AddListener(OnPlayerDieHandler);
         } else
         {
             Destroy(gameObject);
@@ -288,20 +282,5 @@ public class GameManager : MonoBehaviour
     private void OnEnemyRespawnHandler(string p_origin)
     {
         Debug.Log($"EnemyRespawn event. Called by {p_origin}. Executed in {name}");
-    }
-
-    private void OnPlayerMoveHandler(string p_origin)
-    {
-        Debug.Log($"PlayerMove event. Called by {p_origin}. Executed in {name}");
-    }
-
-    private void OnPlayerAttackHandler(string p_origin)
-    {
-        Debug.Log($"PlayerAttack event. Called by {p_origin}. Executed in {name}");
-    }
-
-    private void OnPlayerDieHandler(string p_origin)
-    {
-        Debug.Log($"PlayerDie event. Called by {p_origin}. Executed in {name}");
     }
 }

@@ -37,6 +37,10 @@ public class PlayerController : MonoBehaviour
 
     private Vector3 m_fixUp;
 
+    public UnityEvent<string> OnPlayerMove;
+    public UnityEvent<string> OnPlayerAttack;
+    public UnityEvent<string> OnPlayerDie;
+
     private void Start()
     {
         grid = gameObject.AddComponent<GridLogic>();
@@ -49,6 +53,10 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         m_playerHP = m_maxHP;
+
+        OnPlayerMove.AddListener(OnPlayerMoveHandler);
+        OnPlayerAttack.AddListener(OnPlayerAttackHandler);
+        OnPlayerDie.AddListener(OnPlayerDieHandler);
     }
 
     void Update()
@@ -162,7 +170,7 @@ public class PlayerController : MonoBehaviour
                 break;
         }
 
-        //OnPlayerAttack?.Invoke(name);
+        OnPlayerAttack?.Invoke(name);
         m_spellLoaded = SpellLoaded.None;
 
         return l_prevSpell;
@@ -216,7 +224,7 @@ public class PlayerController : MonoBehaviour
         {
             m_audioSource.PlayOneShot(m_audioDeath);
             m_playerCharacter.GetComponent<Animator>().SetBool("Alive", false);
-            GameManager.GetInstance().OnPlayerDie?.Invoke(name);
+            OnPlayerDie?.Invoke(name);
         }
         else
         {
@@ -243,7 +251,7 @@ public class PlayerController : MonoBehaviour
                 return;
             }
 
-            GameManager.GetInstance().OnPlayerAttack?.Invoke(name);
+            OnPlayerAttack?.Invoke(name);
 
             m_playerCharacter.GetComponent<Animator>().SetTrigger("PhysicalAttack");
 
@@ -295,13 +303,30 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
-        GameManager.GetInstance().OnPlayerMove?.Invoke(name);
+        OnPlayerMove?.Invoke(name);
 
         m_playerCharacter.GetComponent<Animator>().SetBool("Running",true);
         m_direction = l_direction;
         m_isMoving = true;
         m_playerDamageArea.transform.position = m_playerCharacter.transform.position + l_direction;
         StartCoroutine(grid.Movement(m_playerControl, m_playerCharacter, l_direction, 0.0f));
+    }
+
+    // events
+
+    private void OnPlayerMoveHandler(string p_origin)
+    {
+        Debug.Log($"PlayerMove event. Called by {p_origin}. Executed in {name}");
+    }
+
+    private void OnPlayerAttackHandler(string p_origin)
+    {
+        Debug.Log($"PlayerAttack event. Called by {p_origin}. Executed in {name}");
+    }
+
+    private void OnPlayerDieHandler(string p_origin)
+    {
+        Debug.Log($"PlayerDie event. Called by {p_origin}. Executed in {name}");
     }
 
 }
