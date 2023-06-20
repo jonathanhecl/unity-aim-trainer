@@ -60,7 +60,7 @@ public class EnemyController : EnemyEntity
         {
             var playerControl = GameManager.GetInstance().GetPlayerControl();
             var l_spell = playerControl.UseSpell();
-            if (l_spell == SpellLoaded.Attack)
+            if (l_spell == SpellType.Attack)
             {
                 m_entropy++; // More entropy with spell attack
                 HandleHurt(50.0f);
@@ -89,7 +89,7 @@ public class EnemyController : EnemyEntity
             m_enemyCharacter.GetComponent<Animator>().SetBool("Alive", false);
             OnEnemyDie?.Invoke(name);
             if (!GameManager.GetInstance().CanChangeMap()) {
-                GameManager.GetInstance().CreateEnemy();
+                GameManager.GetInstance().GetEnemyManager().CreateEnemy();
             }
         }
         else

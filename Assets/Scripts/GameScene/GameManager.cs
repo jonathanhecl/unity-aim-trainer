@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using TMPro;
+using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Rendering;
@@ -23,15 +24,8 @@ struct Timer
 
 public class GameManager : MonoBehaviour
 {
+    [SerializeField] private EnemyManager m_enemyManager;
     [SerializeField] private PlayerController m_playerControl;
-    [SerializeField] private GameObject m_enemyPrefab;
-
-    [SerializeField] private EnemyData m_enemyDataNormal;
-    [SerializeField] private EnemyData m_enemyDataSpeeder;
-
-    [SerializeField] private Transform[] m_respawnPosition = new Transform[4];
-
-    [SerializeField] private List<GameObject> m_enemies = new List<GameObject>();
 
     // Volumes
 
@@ -67,7 +61,6 @@ public class GameManager : MonoBehaviour
 
     // events
 
-    public UnityEvent<string> OnEnemyRespawn;
     public UnityEvent<string> OnChangeMap;
 
     private static GameManager m_instance;
@@ -77,7 +70,6 @@ public class GameManager : MonoBehaviour
         if (m_instance == null)
         {
             m_instance = this;
-            OnEnemyRespawn.AddListener(OnEnemyRespawnHandler);
             OnChangeMap.AddListener(OnChangeMapHandler);
         } else
         {
@@ -99,7 +91,7 @@ public class GameManager : MonoBehaviour
 
         ResetScore();
 
-        CreateEnemy();
+        m_enemyManager.CreateEnemy();
     }
 
     public static GameManager GetInstance()
@@ -112,31 +104,14 @@ public class GameManager : MonoBehaviour
         return m_playerControl;
     }
 
+    public EnemyManager GetEnemyManager()
+    {
+        return m_enemyManager;
+    }
+
     public bool IsPlayerAlive()
     {
         return m_playerControl.IsAlive();
-    }
-
-    public void CreateEnemy()
-    {
-        var l_respawnPosition = m_respawnPosition[UnityEngine.Random.Range(0, m_respawnPosition.Length)];
-
-        var newEnemy = Instantiate(m_enemyPrefab, l_respawnPosition.position, Quaternion.identity);
-
-        OnEnemyRespawn?.Invoke(name);
-        m_enemies.Add(newEnemy);
-
-        EnemyController enemyController = newEnemy.GetComponent<EnemyController>();
-
-        var l_random = UnityEngine.Random.Range(0, 2);
-        if (l_random <= 0.9)
-        {
-            enemyController.InitEnemy(m_enemyDataSpeeder, m_playerControl.gameObject);
-        }
-        else
-        {
-            enemyController.InitEnemy(m_enemyDataNormal, m_playerControl.gameObject);
-        }
     }
 
     // intervals
@@ -218,6 +193,11 @@ public class GameManager : MonoBehaviour
             }
             RefreshSpell();
         }
+
+        if (Input.GetKeyDown(KeyCode.X))
+        {
+            m_enemyManager.CreateEnemy();
+        }
     }
 
     private Timer GetTimer(float p_init)
@@ -233,6 +213,11 @@ public class GameManager : MonoBehaviour
 
     private void RefreshTimer()
     {
+        if (!m_playerControl.IsAlive())
+        {
+            return;
+        }
+
         var l_timer = GetTimer(m_started);
         var l_minutes = "";
         var l_seconds = "";
@@ -373,11 +358,6 @@ public class GameManager : MonoBehaviour
     }
 
     // events
-
-    private void OnEnemyRespawnHandler(string p_origin)
-    {
-        Debug.Log($"EnemyRespawn event. Called by {p_origin}. Executed in {name}");
-    }
 
     private void OnChangeMapHandler(string p_origin)
     {

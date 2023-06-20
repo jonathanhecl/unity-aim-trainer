@@ -12,7 +12,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float m_maxHP = 200.0f;
     private float m_playerHP = 0;
 
-    private SpellLoaded m_spellLoaded = 0;
+    private SpellType m_spellLoaded = 0;
 
     private Vector3 m_direction = Vector3.zero;
 
@@ -61,11 +61,6 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.X))
-        {
-            GameManager.GetInstance().CreateEnemy();
-        }
-
         if (m_playerHP <= 0)
         {
             HandleRevive();
@@ -132,11 +127,11 @@ public class PlayerController : MonoBehaviour
             {
                 return;
             }
-            SetSpell(SpellLoaded.Attack);
+            SetSpell(SpellType.Attack);
         }
     }
 
-    public void SetSpell(SpellLoaded spellType)
+    public void SetSpell(SpellType spellType)
     {
         if (!GameManager.GetInstance().LoadSpell())
         {
@@ -147,31 +142,31 @@ public class PlayerController : MonoBehaviour
         Debug.Log("Spell " + spellType.ToString() + " loaded");
     }
 
-    public SpellLoaded UseSpell()
+    public SpellType UseSpell()
     {
         var l_prevSpell = m_spellLoaded;
 
-        if (m_spellLoaded == SpellLoaded.None)
+        if (m_spellLoaded == SpellType.None)
         {
             return l_prevSpell;
         }
 
         switch (m_spellLoaded)
         {
-            case SpellLoaded.Attack:
+            case SpellType.Attack:
                 m_playerCharacter.GetComponent<Animator>().SetTrigger("MagicAttack");
                 m_audioSource.PlayOneShot(m_audioSpellAttack);
                 break;
-            case SpellLoaded.Cure:
+            case SpellType.Cure:
                 //m_playerControl.m_audioSource.PlayOneShot(m_playerControl.m_audioSpellCure);
                 break;
-            case SpellLoaded.Paralysis:
+            case SpellType.Paralysis:
                 //m_playerControl.m_audioSource.PlayOneShot(m_playerControl.m_audioSpellParalysis);
                 break;
         }
 
         OnPlayerHurt?.Invoke(name);
-        m_spellLoaded = SpellLoaded.None;
+        m_spellLoaded = SpellType.None;
 
         return l_prevSpell;
     }

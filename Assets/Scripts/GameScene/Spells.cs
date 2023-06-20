@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public enum SpellLoaded
+public enum SpellType
 {
     None,
     Attack,
