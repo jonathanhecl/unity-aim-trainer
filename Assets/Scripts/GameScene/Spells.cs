@@ -7,8 +7,3 @@ public enum SpellLoaded
     Cure,
     Paralysis
 };
-
-public class Spells : MonoBehaviour
-{
-   
-}

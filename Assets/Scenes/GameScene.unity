@@ -2410,6 +2410,7 @@ MonoBehaviour:
     type: 2}
   m_volumeDamage: {fileID: 11400000, guid: cf0cd0d6557433a4fa2db335913b3fae, type: 2}
   m_scoreText: {fileID: 1162235647}
+  m_timerText: {fileID: 1383191052}
   m_playerHPSlider: {fileID: 1708611511}
   m_potionImage: {fileID: 923980505}
   m_intervalPotion: 1
@@ -2832,6 +2833,18 @@ PrefabInstance:
       objectReference: {fileID: 9100000, guid: 3ce4e4ad21d37194eb602c7ca9bae678, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0d81e0a0a320433479322e967948819e, type: 3}
+--- !u!114 &1383191052 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6270771099836760153, guid: 3ccc02a8b6ebb194aaba6bef0b581554,
+    type: 3}
+  m_PrefabInstance: {fileID: 1484726799106597504}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &1391375315 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7597958447654466878, guid: d0a5b206e2b95f541bd2b18633fc33c8,
@@ -4778,6 +4791,21 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1484726798625748278, guid: 3ccc02a8b6ebb194aaba6bef0b581554,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1484726798851347243, guid: 3ccc02a8b6ebb194aaba6bef0b581554,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1484726799142696623, guid: 3ccc02a8b6ebb194aaba6bef0b581554,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 1484726799230309984, guid: 3ccc02a8b6ebb194aaba6bef0b581554,
         type: 3}
       propertyPath: m_Name
@@ -4892,6 +4920,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1484726799972392017, guid: 3ccc02a8b6ebb194aaba6bef0b581554,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7869918021816839451, guid: 3ccc02a8b6ebb194aaba6bef0b581554,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3ccc02a8b6ebb194aaba6bef0b581554, type: 3}

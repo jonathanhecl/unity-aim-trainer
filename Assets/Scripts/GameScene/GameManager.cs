@@ -7,6 +7,20 @@ using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
 
+struct Timer
+{
+    public int minutes;
+    public int second;
+    public int milisecond;
+
+    public Timer(int m, int s, int ms)
+    {
+        minutes = m;
+        second = s;
+        milisecond = ms;
+    }
+}
+
 public class GameManager : MonoBehaviour
 {
     [SerializeField] private PlayerController m_playerControl;
@@ -28,6 +42,7 @@ public class GameManager : MonoBehaviour
     // UI
 
     [SerializeField] private TMP_Text m_scoreText;
+    [SerializeField] private TMP_Text m_timerText;
     [SerializeField] private Slider m_playerHPSlider;
 
     [SerializeField] private Image m_potionImage;
@@ -45,6 +60,7 @@ public class GameManager : MonoBehaviour
 
     // intervals
 
+    private float m_started;
     private float m_timePotion = 1.0f;
     private float m_timeSword = 1.0f;
     private float m_timeSpell = 1.0f;
@@ -78,6 +94,8 @@ public class GameManager : MonoBehaviour
         m_timeSword = m_intervalSword;
         m_timeSpell = m_intervalSpell;
         m_volumeGlobal.profile = m_volumePostProcess;
+
+        m_started = Time.time;
 
         ResetScore();
 
@@ -166,6 +184,8 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
+        RefreshTimer();
+
         // Potion
         if (m_timePotion < m_intervalPotion)
         {
@@ -198,7 +218,57 @@ public class GameManager : MonoBehaviour
             }
             RefreshSpell();
         }
+    }
 
+    private Timer GetTimer(float p_init)
+    {
+        var l_since = Time.time - p_init;
+
+        var l_minutes = Convert.ToInt32(Math.Floor(l_since / 60));
+        var l_seconds = Convert.ToInt32(Math.Floor(l_since) - (l_minutes * 60));
+        var l_miliseconds = Convert.ToInt32(Math.Floor((l_since - ((l_minutes * 60) + l_seconds)) * 1000));
+
+        return new Timer(l_minutes, l_seconds, l_miliseconds);
+    }
+
+    private void RefreshTimer()
+    {
+        var l_timer = GetTimer(m_started);
+        var l_minutes = "";
+        var l_seconds = "";
+        var l_miliseconds = "";
+
+
+        if (l_timer.minutes.ToString().Length == 1)
+        {
+            l_minutes = "0" + l_timer.minutes.ToString();
+        } else
+        {
+            l_minutes =  l_timer.minutes.ToString();
+        }
+
+        if (l_timer.second.ToString().Length == 1)
+        {
+            l_seconds = "0" + l_timer.second.ToString();
+        }
+        else
+        {
+            l_seconds = l_timer.second.ToString();
+        }
+
+        if (l_timer.milisecond.ToString().Length == 2)
+        {
+            l_miliseconds = "0" + l_timer.milisecond.ToString();
+        } else if (l_timer.milisecond.ToString().Length == 1)
+        {
+            l_miliseconds = "00" + l_timer.milisecond.ToString();
+        }
+        else
+        {
+            l_miliseconds = l_timer.milisecond.ToString();
+        }
+        
+        m_timerText.text = l_minutes + ":" + l_seconds + ":" + l_miliseconds;
     }
 
     public bool CanChangeMap()
