@@ -84,12 +84,13 @@ public class EnemyController : EnemyEntity
 
         if (m_currentHP <= 0)
         {
-            GameManager.GetInstance().AddScore(2);
+            GameManager.GetInstance().AddScore(3);
             m_audioSource.PlayOneShot(m_enemyData.enemyBase.m_audioDeath);
             m_enemyCharacter.GetComponent<Animator>().SetBool("Alive", false);
             OnEnemyDie?.Invoke(name);
-            // Create a new enemy
-            GameManager.GetInstance().CreateEnemy();
+            if (!GameManager.GetInstance().CanChangeMap()) {
+                GameManager.GetInstance().CreateEnemy();
+            }
         }
         else
         {

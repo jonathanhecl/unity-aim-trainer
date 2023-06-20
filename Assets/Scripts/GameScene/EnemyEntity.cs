@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Net.NetworkInformation;
 using UnityEngine;
 using UnityEngine.Events;
@@ -19,7 +20,7 @@ public class EnemyEntity : MonoBehaviour
     {
         OnEnemyMove.AddListener(OnEnemyMoveHandler);
         OnEnemyAttack.AddListener(OnEnemyAttackHandler);
-        OnEnemyDie.AddListener(OnEnemyDieHandler);        
+        OnEnemyDie.AddListener(OnEnemyDieHandler);
     }
 
     protected Vector3 RandomMovement(Vector3 p_direction, Vector3 p_invalid)
@@ -76,8 +77,28 @@ public class EnemyEntity : MonoBehaviour
         Debug.Log($"EnemyAttack event. Called by {p_origin}. Executed in {name}");
     }
 
-    private void OnEnemyDieHandler(string p_origin)
+    private void OnEnemyDieHandler(string p_origin, GameManager p_gameManager)
     {
         Debug.Log($"EnemyDie event. Called by {p_origin}. Executed in {name}");
+
+        StartCoroutine(CleanEnemyBody(p_gameManager));
+    }
+
+    IEnumerator CleanEnemyBody(GameManager p_gameManager)
+    {
+        yield return new WaitForSeconds(5);
+
+        while (transform.position.y > -7)
+        {
+            transform.position -= Vector3.up * Time.deltaTime;
+            yield return null;
+        }
+
+        Destroy(gameObject);
+
+        if (p_gameManager.CanChangeMap())
+        {
+            p_gameManager.ChangeMap();
+        }
     }
 }

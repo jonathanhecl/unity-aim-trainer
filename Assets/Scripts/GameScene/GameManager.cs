@@ -52,6 +52,7 @@ public class GameManager : MonoBehaviour
     // events
 
     public UnityEvent<string> OnEnemyRespawn;
+    public UnityEvent<string> OnChangeMap;
 
     private static GameManager m_instance;
 
@@ -61,6 +62,7 @@ public class GameManager : MonoBehaviour
         {
             m_instance = this;
             OnEnemyRespawn.AddListener(OnEnemyRespawnHandler);
+            OnChangeMap.AddListener(OnChangeMapHandler);
         } else
         {
             Destroy(gameObject);
@@ -199,6 +201,29 @@ public class GameManager : MonoBehaviour
 
     }
 
+    public bool CanChangeMap()
+    {
+        if (m_score > 10)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    public void ChangeMap()
+    {
+        var l_scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
+        if (l_scene.name == "GameScene")
+        {
+            UnityEngine.SceneManagement.SceneManager.LoadScene("GameSceneLava");
+        }
+        else
+        {
+            UnityEngine.SceneManagement.SceneManager.LoadScene("GameScene");
+        }
+        m_score = 0;
+    }
+
     public void HandleGameOver()
     {
         Debug.Log("Game Over");
@@ -282,5 +307,10 @@ public class GameManager : MonoBehaviour
     private void OnEnemyRespawnHandler(string p_origin)
     {
         Debug.Log($"EnemyRespawn event. Called by {p_origin}. Executed in {name}");
+    }
+
+    private void OnChangeMapHandler(string p_origin)
+    {
+        Debug.Log($"OnChangeMap event. Called by {p_origin}. Executed in {name}");
     }
 }

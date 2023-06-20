@@ -38,7 +38,7 @@ public class PlayerController : MonoBehaviour
     private Vector3 m_fixUp;
 
     public UnityEvent<string> OnPlayerMove;
-    public UnityEvent<string> OnPlayerAttack;
+    public UnityEvent<string> OnPlayerHurt;
     public UnityEvent<string> OnPlayerDie;
 
     private void Start()
@@ -55,7 +55,7 @@ public class PlayerController : MonoBehaviour
         m_playerHP = m_maxHP;
 
         OnPlayerMove.AddListener(OnPlayerMoveHandler);
-        OnPlayerAttack.AddListener(OnPlayerAttackHandler);
+        OnPlayerHurt.AddListener(OnPlayerHurtHandler);
         OnPlayerDie.AddListener(OnPlayerDieHandler);
     }
 
@@ -170,7 +170,7 @@ public class PlayerController : MonoBehaviour
                 break;
         }
 
-        OnPlayerAttack?.Invoke(name);
+        OnPlayerHurt?.Invoke(name);
         m_spellLoaded = SpellLoaded.None;
 
         return l_prevSpell;
@@ -251,7 +251,7 @@ public class PlayerController : MonoBehaviour
                 return;
             }
 
-            OnPlayerAttack?.Invoke(name);
+            OnPlayerHurt?.Invoke(name);
 
             m_playerCharacter.GetComponent<Animator>().SetTrigger("PhysicalAttack");
 
@@ -296,7 +296,7 @@ public class PlayerController : MonoBehaviour
         }
 
         if (!grid.PlayerCanMove(m_playerControl, l_direction) || 
-            IsEnemyInFront() != null)  // Can't move only rotate
+            (IsEnemyInFront() != null && l_direction == transform.forward))  // Can't move only rotate
         {
             m_playerCharacter.transform.rotation = Quaternion.LookRotation(l_direction);
 
@@ -319,9 +319,9 @@ public class PlayerController : MonoBehaviour
         Debug.Log($"PlayerMove event. Called by {p_origin}. Executed in {name}");
     }
 
-    private void OnPlayerAttackHandler(string p_origin)
+    private void OnPlayerHurtHandler(string p_origin)
     {
-        Debug.Log($"PlayerAttack event. Called by {p_origin}. Executed in {name}");
+        Debug.Log($"PlayerHurt event. Called by {p_origin}. Executed in {name}");
     }
 
     private void OnPlayerDieHandler(string p_origin)
