@@ -23,6 +23,8 @@ public class EnemyManager : MonoBehaviour
 
     public void CreateEnemy()
     {
+        GameManager.GetInstance().AddEvent(EventType.CreatureCreated);
+
         var l_respawnPosition = m_respawnPosition[UnityEngine.Random.Range(0, m_respawnPosition.Length)];
 
         var newEnemy = Instantiate(m_enemyPrefab, l_respawnPosition.position, Quaternion.identity);

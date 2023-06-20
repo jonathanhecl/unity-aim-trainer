@@ -831,6 +831,18 @@ MonoBehaviour:
   m_RequiresDepthTexture: 0
   m_RequiresColorTexture: 0
   m_Version: 2
+--- !u!114 &397625932 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 400032551779363770, guid: 3ccc02a8b6ebb194aaba6bef0b581554,
+    type: 3}
+  m_PrefabInstance: {fileID: 1825161601}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &401209384
 GameObject:
   m_ObjectHideFlags: 0
@@ -1491,6 +1503,7 @@ MonoBehaviour:
   m_volumeDamage: {fileID: 11400000, guid: cf0cd0d6557433a4fa2db335913b3fae, type: 2}
   m_scoreText: {fileID: 1825161607}
   m_timerText: {fileID: 1825161606}
+  m_statsText: {fileID: 397625932}
   m_playerHPSlider: {fileID: 1825161605}
   m_potionImage: {fileID: 1825161604}
   m_intervalPotion: 1
@@ -2264,6 +2277,12 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 406191909}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1787251210 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 270431246984345151, guid: 3ccc02a8b6ebb194aaba6bef0b581554,
+    type: 3}
+  m_PrefabInstance: {fileID: 1825161601}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1825161601
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2391,10 +2410,25 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4551691785927636306, guid: 3ccc02a8b6ebb194aaba6bef0b581554,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 500
+      objectReference: {fileID: 0}
     - target: {fileID: 6270771099836760153, guid: 3ccc02a8b6ebb194aaba6bef0b581554,
         type: 3}
       propertyPath: m_text
       value: 00:00:000
+      objectReference: {fileID: 0}
+    - target: {fileID: 6738856933989153235, guid: 3ccc02a8b6ebb194aaba6bef0b581554,
+        type: 3}
+      propertyPath: m_cursor
+      value: 
+      objectReference: {fileID: 1787251210}
+    - target: {fileID: 8168044450174878714, guid: 3ccc02a8b6ebb194aaba6bef0b581554,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3ccc02a8b6ebb194aaba6bef0b581554, type: 3}

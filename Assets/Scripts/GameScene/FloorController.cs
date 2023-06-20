@@ -12,6 +12,7 @@ public class FloorController : MonoBehaviour
             var l_spell = playerControl.UseSpell();
             if (l_spell != SpellType.None)
             {
+                GameManager.GetInstance().AddEvent(EventType.SpellMissed);
                 Debug.Log("Spell missed");
             }
         }

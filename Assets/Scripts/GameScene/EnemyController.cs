@@ -63,6 +63,7 @@ public class EnemyController : EnemyEntity
             if (l_spell == SpellType.Attack)
             {
                 m_entropy++; // More entropy with spell attack
+                GameManager.GetInstance().AddEvent(EventType.SpellHit);
                 HandleHurt(50.0f);
             }
         }

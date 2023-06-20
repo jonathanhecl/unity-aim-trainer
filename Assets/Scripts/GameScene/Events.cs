@@ -2,14 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-/*              Pegados Errados
- *     Golpes      3       7
- *     Hechizos    6       0  > 600ms prom entre carga y golpe
- *     Posiciones  1
- * 
- */
-
-
 struct Event
 {
     public EventType eventType;
@@ -24,6 +16,7 @@ struct Event
 
 public enum EventType
 {
+    CreatureCreated,
     AttackMissed,
     AttackHit,
     SpellLoaded,
@@ -41,12 +34,44 @@ public class Events : MonoBehaviour
         m_events.Add(new Event(p_eventType, p_time));
     }
 
-    public void PrintEvents()
+    public string ResumeEvents()
     {
-        foreach (var e in m_events)
+        var l_types = new Dictionary<EventType, int>();
+        for (int t = 1; t <= 6; t++)
         {
-            Debug.Log(e.eventType + " " + e.time);
+            for (int i = 0; i < m_events.Count; i++)
+            {
+                if (m_events[i].eventType == (EventType)t)
+                {
+                    if (l_types.ContainsKey((EventType)t))
+                    {
+                        l_types[(EventType)t]++;
+                    }
+                    else
+                    {
+                        l_types.Add((EventType)t, 1);
+                    }
+                }
+            }
         }
+
+        var result = "";
+
+        for (int t = 1; t <= 6; t++)
+        {
+            if (l_types.ContainsKey((EventType)t))
+            {
+                result += ((EventType)t).ToString() + ": " + l_types[(EventType)t] + "\n";
+            }
+            else
+            {
+                result += ((EventType)t).ToString() + ": 0" + "\n";
+            }
+        }
+
+        Debug.Log(result);
+
+        return result;
     }
 
     public void ResetEvents()

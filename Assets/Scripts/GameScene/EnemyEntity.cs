@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Net.NetworkInformation;
+using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -80,6 +81,8 @@ public class EnemyEntity : MonoBehaviour
     private void OnEnemyDieHandler(string p_origin)
     {
         Debug.Log($"EnemyDie event. Called by {p_origin}. Executed in {name}");
+
+        GameManager.GetInstance().ShowResume();
 
         StartCoroutine(CleanEnemyBody());
     }

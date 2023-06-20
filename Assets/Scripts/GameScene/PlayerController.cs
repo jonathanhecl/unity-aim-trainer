@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -139,7 +140,13 @@ public class PlayerController : MonoBehaviour
         }
 
         m_spellLoaded = spellType;
+        GameManager.GetInstance().AddEvent(EventType.SpellLoaded);
         Debug.Log("Spell " + spellType.ToString() + " loaded");
+    }
+
+    public SpellType SpellLoaded()
+    {
+        return m_spellLoaded;
     }
 
     public SpellType UseSpell()
@@ -252,11 +259,13 @@ public class PlayerController : MonoBehaviour
 
             var l_target = IsEnemyInFront();
             if (l_target != null)
-            { 
+            {
+                GameManager.GetInstance().AddEvent(EventType.AttackHit);
                 m_audioSource.PlayOneShot(m_audioAttackHit);
                 l_target.HandleHurt(50);
             } else
             {
+                GameManager.GetInstance().AddEvent(EventType.AttackMissed);
                 m_audioSource.PlayOneShot(m_audioAttackMiss);
             }
         }

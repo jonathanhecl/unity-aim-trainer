@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEditor.PackageManager;
@@ -37,6 +38,8 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private TMP_Text m_scoreText;
     [SerializeField] private TMP_Text m_timerText;
+    [SerializeField] private TMP_Text m_statsText;
+
     [SerializeField] private Slider m_playerHPSlider;
 
     [SerializeField] private Image m_potionImage;
@@ -63,6 +66,8 @@ public class GameManager : MonoBehaviour
 
     public UnityEvent<string> OnChangeMap;
 
+    private Events m_events = new Events();
+
     private static GameManager m_instance;
 
     private void Awake()
@@ -88,6 +93,10 @@ public class GameManager : MonoBehaviour
         m_volumeGlobal.profile = m_volumePostProcess;
 
         m_started = Time.time;
+
+        m_statsText.SetText("");
+
+        m_events?.ResetEvents();
 
         ResetScore();
 
@@ -124,6 +133,7 @@ public class GameManager : MonoBehaviour
         }
 
         m_timePotion = 0.0f;
+        m_events?.AddEvent(EventType.UsePotion, m_started);
         return true;
     }
 
@@ -198,6 +208,34 @@ public class GameManager : MonoBehaviour
         {
             m_enemyManager.CreateEnemy();
         }
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
+        }
+    }
+
+    public void AddEvent(EventType p_eventType)
+    {
+        m_events?.AddEvent(p_eventType, m_started);
+    }
+
+    public void ShowResume()
+    {
+        var l_result = m_events?.ResumeEvents();
+
+        StartCoroutine(ShowStats(l_result));
+
+        m_events?.ResetEvents();
+    }
+
+    IEnumerator ShowStats(string p_result)
+    {
+        m_statsText.SetText("Stats\n\n" + p_result);
+
+        yield return new WaitForSeconds(5);
+
+        m_statsText.SetText("");
     }
 
     private Timer GetTimer(float p_init)
