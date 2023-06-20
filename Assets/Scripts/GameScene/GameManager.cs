@@ -203,7 +203,7 @@ public class GameManager : MonoBehaviour
 
     public bool CanChangeMap()
     {
-        if (m_score > 10)
+        if (m_score >= 10)
         {
             return true;
         }
