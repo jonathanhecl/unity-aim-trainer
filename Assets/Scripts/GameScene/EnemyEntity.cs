@@ -77,14 +77,14 @@ public class EnemyEntity : MonoBehaviour
         Debug.Log($"EnemyAttack event. Called by {p_origin}. Executed in {name}");
     }
 
-    private void OnEnemyDieHandler(string p_origin, GameManager p_gameManager)
+    private void OnEnemyDieHandler(string p_origin)
     {
         Debug.Log($"EnemyDie event. Called by {p_origin}. Executed in {name}");
 
-        StartCoroutine(CleanEnemyBody(p_gameManager));
+        StartCoroutine(CleanEnemyBody());
     }
 
-    IEnumerator CleanEnemyBody(GameManager p_gameManager)
+    IEnumerator CleanEnemyBody()
     {
         yield return new WaitForSeconds(5);
 
@@ -96,9 +96,9 @@ public class EnemyEntity : MonoBehaviour
 
         Destroy(gameObject);
 
-        if (p_gameManager.CanChangeMap())
+        if (GameManager.GetInstance().CanChangeMap())
         {
-            p_gameManager.ChangeMap();
+            GameManager.GetInstance().ChangeMap();
         }
     }
 }
